@@ -4,7 +4,10 @@
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
             <name>IFT585</name>
-            <source-roots/>
+            <source-roots>
+                <root id="src.Client.dir"/>
+                <root id="src.Serveur.dir"/>
+            </source-roots>
             <test-roots/>
         </data>
     </configuration>
