@@ -27,13 +27,15 @@ public class UDPServer implements Runnable{
 		logger.info("server start on port " + String.valueOf(serverPort));
 		try {
 			mySocket = new DatagramSocket(serverPort); // port convenu avec les clients
-			byte[] buffer = new byte[1000];
+			byte[] buffer = new byte[1500];
 			while (true) {
-				DatagramPacket datagram = new DatagramPacket(buffer, buffer.length);
-				mySocket.receive(datagram); // r�ception bloquante
-				logger.info("datafram receive");						
-				//What append if pool full ?
-	            pool.execute(new MessageHandler(datagram,getMySocket()));					
+                            DatagramPacket datagram = new DatagramPacket(buffer, buffer.length);
+                            mySocket.receive(datagram); // reception bloquante
+                            
+                            logger.info("datafram receive");
+                            
+                            //What append if pool full ?
+                            pool.execute(new UDPPacketHandler(datagram,getMySocket()));					
 			}
 		} catch (SocketException e) {
 			System.out.println("Socket: " + e.getMessage());
