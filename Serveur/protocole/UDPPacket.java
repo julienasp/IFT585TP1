@@ -5,18 +5,28 @@ import java.net.InetAddress;
 
 public class UDPPacket implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2622663736791338175L;
 		
     final static public int FILEUPLOAD = 0;
     final static public int FILEDOWNLOAD = 1;
 		
-    private int type;					// type de connexion upload ou download
-    private int seq = 0; 				// numéro de séquence 
-    private int ack = 0; 				// numéro d'acknowledgement
-    private int fin = 0;                              // attribut pour savoir si le paquet udp était le dernier
-
+    private int type;				// type de connexion upload ou download
+    private int seq = 0; 			// numéro de séquence 
+    private int ack = 0;                        // numéro d'acknowledgement
+    private int fin = 0;                        // attribut pour savoir si le paquet udp était le dernier
+    private byte[] data = new byte[1024];       //Array avec les data de notre objets
     private InetAddress destination; 		// destinataire du message
     private int destinationPort;		// port du destinataire
+
+    /*************************************************************/
+    /***BELOW WE CAN FIND ALL CONSTRUCTORS FOR AN UDPPACKET*******/
+    /*************************************************************/
+    
+    public UDPPacket(int type, InetAddress destination, int destinationPort) {
+        this.type = type;
+        this.destination = destination;
+        this.destinationPort = destinationPort;
+    }
 
     
     /*************************************************************/
@@ -34,10 +44,19 @@ public class UDPPacket implements Serializable {
     public boolean isTheLastPacket(){
         return (fin == 1);
     }
+
+ 
     /**************************************************/
     /**BELOW YOU WILL FIND EVERYONE SETTER AND GETTER**/
     /**************************************************/
-		
+
+    public byte[] getData() {
+        return data;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
+    }
     public int getType() {
         return type;
     }
