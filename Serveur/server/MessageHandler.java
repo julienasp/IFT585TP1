@@ -8,19 +8,12 @@ import java.net.SocketException;
 
 import org.apache.log4j.Logger;
 
-import dataManagement.ListeDesMatchs;
-import dataObject.Bet;
-import dataObject.BetRespond;
-import dataObject.ListMatchName;
-import dataObject.Match;
+
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
-import protocole.Message;
-import protocole.MessageError;
-import protocole.Reply;
-import protocole.Request;
+import protocole.UDPPacket;
 import utils.Marshallizer;
 
 //Extact data from datagram
@@ -43,7 +36,7 @@ public class MessageHandler implements Runnable {
 	public void run() {
 		//extract data from packet
 		data = ListeDesMatchs.getInstance();
-		Message message = (Message) Marshallizer.unmarshall(packetReceive);
+		UDPPacket message = (UDPPacket) Marshallizer.unmarshall(packetReceive);
 		logger.info("message receive " + String.valueOf(message.getType()));	
 		if (message.isRequest()) {
 			//build the response of the request

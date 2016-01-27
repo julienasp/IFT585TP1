@@ -10,7 +10,7 @@ import java.net.SocketTimeoutException;
 import affichage.Menu;
 import dataObject.ListMatchName;
 import dataObject.Match;
-import protocole.Message;
+import protocole.UDPPacket;
 import protocole.Reply;
 import protocole.Request;
 import utils.Marshallizer;
@@ -58,7 +58,7 @@ public class Communication {
 			try {
 				aSocket = new DatagramSocket(this.clientPort);
 			
-				Message ask = Request.craftGetMatchList(this.adress,this.serveurPort);		
+				UDPPacket ask = Request.craftGetMatchList(this.adress,this.serveurPort);		
 				Protocole.send(ask,aSocket);
 				
 				WaitingMessage = new Thread(new Menu.WaitMessage(1000));
@@ -94,7 +94,7 @@ public class Communication {
 			try {
 				aSocket = new DatagramSocket(this.clientPort);
 			
-				Message ask = Request.craftGetMatchList(this.adress,this.serveurPort);		
+				UDPPacket ask = Request.craftGetMatchList(this.adress,this.serveurPort);		
 				Protocole.send(ask,aSocket);
 				
 				System.out.println("message send");
@@ -133,7 +133,7 @@ public class Communication {
 			try {
 				aSocket = new DatagramSocket(this.clientPort);
 			
-				Message ask = Request.craftGetMatchDetail(this.adress,this.serveurPort, idMatch);		
+				UDPPacket ask = Request.craftGetMatchDetail(this.adress,this.serveurPort, idMatch);		
 				Protocole.send(ask,aSocket);
 				
 				WaitingMessage = new Thread(new Menu.WaitMessage(1000));

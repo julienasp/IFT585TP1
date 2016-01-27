@@ -18,7 +18,7 @@ public class Marshallizer {
 		ObjectInput in = null;
 		try {
 		in = new ObjectInputStream(bis);
-		Message o =  (Message) in.readObject();
+		UDPPacket o =  (UDPPacket) in.readObject();
 		return o;
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block

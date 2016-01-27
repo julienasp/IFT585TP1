@@ -13,7 +13,7 @@ import java.util.logging.Level;
 import org.apache.log4j.Logger;
 
 import utils.Marshallizer;
-import protocole.Message;
+import protocole.UDPPacket;
 
 public class Protocole {
 	
@@ -25,7 +25,7 @@ public class Protocole {
 	 * @param aSocket
 	 * @author Uldax
 	 */
-	public static void send(Message message, DatagramSocket aSocket) {
+	public static void send(UDPPacket message, DatagramSocket aSocket) {
 		try {
 				//Message.getData()
 				logger.info(message.toString());
