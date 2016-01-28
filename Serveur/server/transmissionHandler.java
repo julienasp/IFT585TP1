@@ -121,11 +121,12 @@ public class transmissionHandler implements Runnable{
             BufferedInputStream bis; 
             bis = new BufferedInputStream(new FileInputStream(theFile));
             byte[] buffer = new byte[1024];
+            bis.skip(seq-1);
             while(bis.read(buffer) != -1){
                 UDPPacket packetTemp = buildPacket(seq, ack,fin, buffer);
                 fenetre.put(seq, packetTemp);//On ajoute à la liste
                 this.setSeq(this.getSeq() + buffer.length);
-                bis.ski
+                
             }            
             
 
@@ -184,7 +185,8 @@ public class transmissionHandler implements Runnable{
                 Timer timer = new Timer(); //Timer pour les timeouts
 
                 //Création du paquet pour la confirmation de connexion
-                UDPPacket confirmConnectionPacket = buildPacket(1,0,0,new byte[1024]);
+                this.setSeq(1);
+                UDPPacket confirmConnectionPacket = buildPacket(seq,ack,fin,new byte[1024]);
                 
                 //Envoi d'un paquet avec un seq 1. 
                 timer.scheduleAtFixedRate(new TimerTask() {
@@ -210,7 +212,7 @@ public class transmissionHandler implements Runnable{
                     
                     logger.info("an ack was received");
                     
-                    gestionFenetre(datagram);					
+                    					
                 }while (run);
         } catch (SocketException e) {
                 System.out.println("Socket: " + e.getMessage());
