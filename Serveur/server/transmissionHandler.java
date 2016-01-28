@@ -122,21 +122,26 @@ public class transmissionHandler implements Runnable{
             bis = new BufferedInputStream(new FileInputStream(theFile));
             byte[] buffer = new byte[1024];
             bis.skip(seq-1);
-            while(bis.read(buffer) != -1){
+            while(bis.read(buffer) != -1 || fenetre.size() < 5){
                 UDPPacket packetTemp = buildPacket(seq, ack,fin, buffer);
                 fenetre.put(seq, packetTemp);//On ajoute à la liste
-                this.setSeq(this.getSeq() + buffer.length);
-                
-            }            
-            
+                this.setSeq(this.getSeq() + buffer.length);                
+            }             
 
         } catch (FileNotFoundException ex) {
             java.util.logging.Logger.getLogger(transmissionHandler.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(transmissionHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-    }        
+    }  
+    
+    //Envoi de la fenetre
+    private void sendWindow(){
+        for (UDPPacket value : fenetre.values()) {
+            sendPacket(value);
+        }        
+    }
+    
     private void sendPacket(UDPPacket udpPacket) {
         try {
                
@@ -208,6 +213,7 @@ public class transmissionHandler implements Runnable{
                 do  {                   
                     
                     prepWindow();
+                    sendWindow();
                     connectionSocket.receive(datagram); // reception bloquante
                     
                     logger.info("an ack was received");
