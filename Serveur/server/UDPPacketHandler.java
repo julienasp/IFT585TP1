@@ -41,7 +41,7 @@ public class UDPPacketHandler implements Runnable {
 			//Setup the transmissionThread
 			Thread transmissionThread = new Thread(new transmissionHandler(udpPacket));
                         transmissionThread.start();
-			logger.info("TransmissionHandler started");
+			logger.info("TransmissionHandler started");                        
 		}
                 else{
                     //Setup the receptionHandlerThread
