@@ -32,10 +32,11 @@ import utils.Marshallizer;
  * @author JUASP-G73-Android
  */
 public class transmissionHandler implements Runnable{
+    private static final int DATA_SIZE = 1024;
     private UDPPacket connectionPacket;
     private DatagramSocket connectionSocket = null;
     private DatagramPacket packetReceive;
-    private int base = 0;
+    private int base = 0; //Premier paquet de la fenêtre
     private int seq = 0;
     private int ack = 0;
     private int fin = 0;
@@ -162,7 +163,7 @@ public class transmissionHandler implements Runnable{
     private void sendPacket(UDPPacket udpPacket) {
         try {
                
-                logger.debug(udpPacket.toString());
+                logger.info(udpPacket.toString());
                 byte[] packetData = Marshallizer.marshallize(udpPacket);
                 DatagramPacket datagram = new DatagramPacket(packetData,
                                 packetData.length, 
@@ -188,20 +189,20 @@ public class transmissionHandler implements Runnable{
      }
      
        private void gestionAck(UDPPacket udpPacket) {
-        try {
-               
-                logger.debug(udpPacket.toString());
-                byte[] packetData = Marshallizer.marshallize(udpPacket);
-                DatagramPacket datagram = new DatagramPacket(packetData,
-                                packetData.length, 
-                                udpPacket.getDestination(),
-                                udpPacket.getDestinationPort());
-                connectionSocket.send(datagram); // émission non-bloquante
-        } catch (SocketException e) {
-                System.out.println("Socket: " + e.getMessage());
-        } catch (IOException e) {
-                System.out.println("IO: " + e.getMessage());
+        logger.info("gestionAck: Vérification du ack reçu");
+        
+        //Si le ack reçu correspond au premier paquet de la fenetre courante, alors on retire ce dernier de la table
+        if(udpPacket.getAck() == this.getBase()){
+            this.fenetre.remove(udpPacket.getAck());
+            logger.info("gestionAck: le paquet correspondant au ack reçu à été retirer de la fenêtre");
+            this.setBase(this.getBase() + DATA_SIZE); 
+            logger.info("gestionAck: base est incrémenté");
         }
+        else{
+            logger.info("gestionAck: le ack recu ne correspond pas à notre premier paquet, alors la fenêtre reste inchangé");
+        }
+                
+        
     }
     
  
