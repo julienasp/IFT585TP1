@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 //UDP client sends a message to the server and gets a reply
 
-public class UDPClient{
+public class receptionHandler{
 
 	private DatagramSocket connectionSocket = null;
 	private paquetUDP connectionPacket;
@@ -23,7 +23,7 @@ public class UDPClient{
 	//private static final Logger logger = Logger.getAnonymousLogger();
 	private Hashtable<Integer, paquetUDP> fenetre = new Hashtable<Integer,paquetUDP>();
 
-	public UDPClient(int port){ 
+	public receptionHandler(int port){ 
 		serverPort = port;
 	}
 
