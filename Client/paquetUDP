@@ -18,6 +18,8 @@ public class paquetUDP
 
 	public paquetUDP(int type, InetAddress destination, int destinationPort) {
 		this.type = type;
+		this.destination=destination;
+		this.destinationPort=destinationPort;
 	}
 
 	public int getSeq() {
