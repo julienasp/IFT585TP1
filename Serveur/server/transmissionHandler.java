@@ -141,6 +141,18 @@ public class transmissionHandler implements Runnable{
             byte[] buffer = new byte[1024];
             bis.skip(seq-1);            
             while(bis.read(buffer) != -1 && fenetre.size() < 5){
+                
+                //Lorsqu'il ne reste plus aucun byte à lire par la suite, on signal la fin de la transmission                
+                if( bis.available() <= 0 ){
+                    this.setFin(1);
+                    Timer finTimer = new Timer(); //Timer pour les timeouts
+                    finTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                      stop();
+                    }
+                  }, 30000);
+                }
                 UDPPacket packetTemp = buildPacket(seq, ack,fin, buffer);
                 fenetre.put(seq, packetTemp);//On ajoute à la liste
                 this.setSeq(this.getSeq() + buffer.length);      
