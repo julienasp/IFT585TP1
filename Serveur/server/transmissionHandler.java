@@ -269,7 +269,7 @@ public class transmissionHandler implements Runnable{
                         prepWindow();
                         sendWindow();
                     }
-                  }, 0, 1000);
+                  }, 0, 500);
                 
                 //We can start to send data to the client
                 do  {                   
