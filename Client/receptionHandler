@@ -54,16 +54,6 @@ public class receptionHandler{
 		}
 	}
 
-	public void fermetureConnexion()
-	{
-
-	}
-
-	public void reconstruirePaquet()
-	{
-
-	}
-
 	public void start() throws IOException
 	{
 		connectionSocket = new DatagramSocket();
@@ -91,6 +81,7 @@ public class receptionHandler{
 		//PREMIERE RECEPTION DE DATA
 		int seqAttendu = 1;
 		int ackRetour=1;
+		
 		FileOutputStream fileOut = new FileOutputStream("hd.jpg");
 		do
 		{
@@ -101,7 +92,7 @@ public class receptionHandler{
 			paquetUDP receveACK = buildPacket(seqAttendu, ackRetour,new byte[1024] );
 			
 			//ON AJOUTE LE PAQUET RECU AU H_TABLE
-			fenetre.put(UDPReceive.getSeq(), UDPReceive);
+			if(fenetre.containsKey(UDPReceive.getSeq())==false)fenetre.put(UDPReceive.getSeq(), UDPReceive);
 			
 			//SI SEQ RECUE =SEQ ATTENDUE
 			if (UDPReceive.getSeq()==seqAttendu)
@@ -111,12 +102,30 @@ public class receptionHandler{
 				fileOut.write(UDPReceive.getData());
 				//ACK CONFIRME RECEPTION DU PAQUET ATTENDU
 				ackRetour = seqAttendu;
-				seqAttendu +=1024;
+				seqAttendu +=UDPReceive.getData().length;
 			}
 			sendPacket(receveACK);
-			if(UDPReceive.getFin() == 1)return ;
+			if(UDPReceive.getFin() == 1)closeConnection(UDPReceive.getSeq(),UDPReceive.getAck()) ;
 
 		}while(true);
+		
+	}
+	
+	public void closeConnection(int seqNum, int ackNum) throws IOException
+	{
+		Timer timer = new Timer(); //Timer pour les timeouts
+		//ENVOI DU ACK DE FIN
+		paquetUDP endPqt = buildPacket(seqNum, ackNum, new byte[1024]);
+		timer.scheduleAtFixedRate(new TimerTask() 
+		{
+			public void run() 
+			{
+				sendPacket(endPqt);
+			}
+		}, 0, 1000);
+		timer.cancel();
+		
+		connectionSocket.close();
 	}
 
 }
