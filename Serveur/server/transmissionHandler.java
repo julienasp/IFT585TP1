@@ -151,7 +151,7 @@ public class transmissionHandler implements Runnable{
                     public void run() {
                       stop();
                     }
-                  }, 30000);
+                  }, 35000); // 35 secondes avant la fermeture du thread de connection.
                 }
                 UDPPacket packetTemp = buildPacket(seq, ack,fin, buffer);
                 fenetre.put(seq, packetTemp);//On ajoute à la liste
@@ -300,6 +300,7 @@ public class transmissionHandler implements Runnable{
         }
 	}
     public void stop(){
+        connectionSocket.close();
         Thread.currentThread().interrupt();
         return;
     }
