@@ -1,6 +1,5 @@
 package client;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -9,27 +8,24 @@ import java.net.SocketException;
 import java.util.Hashtable;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Logger;
 
 
 //UDP client sends a message to the server and gets a reply
 
-public class receptionHandler{
+public class UDPClient{
 
 	private DatagramSocket connectionSocket = null;
-	private paquetUDP connectionPacket;
+	private UDPPacket connectionPacket;
 	private int serverPort = 0;
-	//private DatagramPacket packetReceive;
-	//private static final Logger logger = Logger.getAnonymousLogger();
-	private Hashtable<Integer, paquetUDP> fenetre = new Hashtable<Integer,paquetUDP>();
+	private Hashtable<Integer, UDPPacket> fenetre = new Hashtable<Integer,UDPPacket>();
 
-	public receptionHandler(int port){ 
+	public UDPClient(int port){ 
 		serverPort = port;
 	}
 
-	protected paquetUDP buildPacket(int seq, int ack, byte[] data) {
+	protected UDPPacket buildPacket(int seq, int ack, byte[] data) {
 
-		paquetUDP packet = new paquetUDP(connectionPacket.getType(),connectionPacket.getDestination(),connectionPacket.getDestinationPort());
+		UDPPacket packet = new UDPPacket(connectionPacket.getType(),connectionPacket.getDestination(),connectionPacket.getDestinationPort());
 		packet.setData(data);
 		packet.setSeq(seq);
 		packet.setSeq(ack);
@@ -37,7 +33,7 @@ public class receptionHandler{
 		return packet;
 	}
 
-	protected void sendPacket(paquetUDP udpPacket) {
+	protected void sendPacket(UDPPacket udpPacket) {
 		try {
 
 			//logger.debug(udpPacket.toString());
@@ -54,6 +50,11 @@ public class receptionHandler{
 		}
 	}
 
+	public void reconstruirePaquet()
+	{
+
+	}
+
 	public void start() throws IOException
 	{
 		connectionSocket = new DatagramSocket();
@@ -64,11 +65,11 @@ public class receptionHandler{
 
 		//reception bloquante du paquet seq=1
 		connectionSocket.receive(datagram);
-
+		connectionPacket = (UDPPacket)Marshallizer.unmarshall(datagram);
 
 		Timer timer = new Timer(); //Timer pour les timeouts
 		//ENVOI DU SEQ=1 ACK=1
-		paquetUDP confirmConnectionPacket = buildPacket(1,1,new byte[1024]);
+		UDPPacket confirmConnectionPacket = buildPacket(1,1,new byte[1024]);
 		timer.scheduleAtFixedRate(new TimerTask() 
 		{
 			public void run() 
@@ -76,46 +77,51 @@ public class receptionHandler{
 				sendPacket(confirmConnectionPacket);
 			}
 		}, 0, 1000);
-		timer.cancel();
 
 		//PREMIERE RECEPTION DE DATA
 		int seqAttendu = 1;
 		int ackRetour=1;
-		
+
 		FileOutputStream fileOut = new FileOutputStream("hd.jpg");
 		do
 		{
 			connectionSocket.receive(datagram);
 			
+
 			//CREATION PAQUET A RECEVOIR ET ACK A RENVOYER
-			paquetUDP UDPReceive = (paquetUDP) Marshallizer.unmarshall(datagram);
-			paquetUDP receveACK = buildPacket(seqAttendu, ackRetour,new byte[1024] );
+			UDPPacket UDPReceive = (UDPPacket) Marshallizer.unmarshall(datagram);
+			UDPPacket receveACK = buildPacket(seqAttendu, ackRetour,new byte[1024] );
 			
+			if(UDPReceive.getSeq() ==1)timer.cancel();
 			//ON AJOUTE LE PAQUET RECU AU H_TABLE
 			if(fenetre.containsKey(UDPReceive.getSeq())==false)fenetre.put(UDPReceive.getSeq(), UDPReceive);
-			
+
 			//SI SEQ RECUE =SEQ ATTENDUE
 			if (UDPReceive.getSeq()==seqAttendu)
 			{
-				
+
 				//ON ECRIT LES DONNES RECUES DANS LE FICHIER
 				fileOut.write(UDPReceive.getData());
 				//ACK CONFIRME RECEPTION DU PAQUET ATTENDU
 				ackRetour = seqAttendu;
-				seqAttendu +=UDPReceive.getData().length;
+				if(UDPReceive.getFin() == 0) seqAttendu +=UDPReceive.getData().length;
 			}
 			sendPacket(receveACK);
-			if(UDPReceive.getFin() == 1)closeConnection(UDPReceive.getSeq(),UDPReceive.getAck()) ;
+			if(UDPReceive.getFin() == 1 && UDPReceive.getSeq() == seqAttendu )
+			{
+				closeConnection(UDPReceive.getSeq(),UDPReceive.getAck()) ;
+				fileOut.close();
+			}
 
 		}while(true);
-		
+
 	}
-	
+
 	public void closeConnection(int seqNum, int ackNum) throws IOException
 	{
 		Timer timer = new Timer(); //Timer pour les timeouts
 		//ENVOI DU ACK DE FIN
-		paquetUDP endPqt = buildPacket(seqNum, ackNum, new byte[1024]);
+		UDPPacket endPqt = buildPacket(seqNum, ackNum, new byte[1024]);
 		timer.scheduleAtFixedRate(new TimerTask() 
 		{
 			public void run() 
@@ -124,7 +130,7 @@ public class receptionHandler{
 			}
 		}, 0, 1000);
 		timer.cancel();
-		
+
 		connectionSocket.close();
 	}
 
