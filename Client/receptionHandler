@@ -101,7 +101,7 @@ public class UDPClient{
 			{
 
 				//ON ECRIT LES DONNES RECUES DANS LE FICHIER
-				fileOut.write(UDPReceive.getData());
+				fileOut.write(UDPReceive.getData(),UDPReceive.getSeq() -1,UDPReceive.getData().length);
 				//ACK CONFIRME RECEPTION DU PAQUET ATTENDU
 				ackRetour = seqAttendu;
 				if(UDPReceive.getFin() == 0) seqAttendu +=UDPReceive.getData().length;
