@@ -1,5 +1,9 @@
 /nbproject/
+
 /bin/
 
 .project
 *.classpath
+=======
+nbproject/project.properties
+>>>>>>> refs/remotes/origin/master

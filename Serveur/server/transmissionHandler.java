@@ -32,9 +32,11 @@ import utils.Marshallizer;
  * @author JUASP-G73-Android
  */
 public class transmissionHandler implements Runnable{
+    private static final int DATA_SIZE = 1024;
     private UDPPacket connectionPacket;
     private DatagramSocket connectionSocket = null;
     private DatagramPacket packetReceive;
+    private int base = 0; //Premier paquet de la fenêtre
     private int seq = 0;
     private int ack = 0;
     private int fin = 0;
@@ -111,6 +113,22 @@ public class transmissionHandler implements Runnable{
         this.theFile = theFile;
     }
 
+    public int getBase() {
+        return base;
+    }
+
+    public void setBase(int base) {
+        this.base = base;
+    }
+    
+    public UDPPacket getConnectionPacket() {
+        return connectionPacket;
+    }
+
+    public void setConnectionPacket(UDPPacket udpPacket) {
+        this.connectionPacket = udpPacket;
+    }
+
     
     /*************************************************************/
     /*****************        METHODS        *********************/
@@ -121,11 +139,23 @@ public class transmissionHandler implements Runnable{
             BufferedInputStream bis; 
             bis = new BufferedInputStream(new FileInputStream(theFile));
             byte[] buffer = new byte[1024];
-            bis.skip(seq-1);
-            while(bis.read(buffer) != -1 || fenetre.size() < 5){
+            bis.skip(seq-1);            
+            while(bis.read(buffer) != -1 && fenetre.size() < 5){
+                
+                //Lorsqu'il ne reste plus aucun byte à lire par la suite, on signal la fin de la transmission                
+                if( bis.available() <= 0 ){
+                    this.setFin(1);
+                    Timer finTimer = new Timer(); //Timer pour les timeouts
+                    finTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                      stop();
+                    }
+                  }, 35000); // 35 secondes avant la fermeture du thread de connection.
+                }
                 UDPPacket packetTemp = buildPacket(seq, ack,fin, buffer);
                 fenetre.put(seq, packetTemp);//On ajoute à la liste
-                this.setSeq(this.getSeq() + buffer.length);                
+                this.setSeq(this.getSeq() + buffer.length);      
             }             
 
         } catch (FileNotFoundException ex) {
@@ -145,7 +175,7 @@ public class transmissionHandler implements Runnable{
     private void sendPacket(UDPPacket udpPacket) {
         try {
                
-                logger.debug(udpPacket.toString());
+                logger.info(udpPacket.toString());
                 byte[] packetData = Marshallizer.marshallize(udpPacket);
                 DatagramPacket datagram = new DatagramPacket(packetData,
                                 packetData.length, 
@@ -169,52 +199,91 @@ public class transmissionHandler implements Runnable{
                 logger.debug(packet.toString());
                 return packet;
      }
+     
+       private void gestionAck(UDPPacket udpPacket) {
+        logger.info("gestionAck: Vérification du ack reçu");
+        
+        //Si le ack reçu correspond au premier paquet de la fenetre courante, alors on retire ce dernier de la table
+        if(udpPacket.getAck() == this.getBase()){
+            this.fenetre.remove(udpPacket.getAck());
+            logger.info("gestionAck: le paquet correspondant au ack reçu à été retirer de la fenêtre");
+            this.setBase(this.getBase() + DATA_SIZE); 
+            logger.info("gestionAck: base est incrémenté");
+        }
+        else{
+            logger.info("gestionAck: le ack recu ne correspond pas à notre premier paquet, alors la fenêtre reste inchangé");
+        }
+                
+        
+    }
     
-     public UDPPacket getConnectionPacket() {
-        return connectionPacket;
-    }
-
-    public void setConnectionPacket(UDPPacket udpPacket) {
-        this.connectionPacket = udpPacket;
-    }
+ 
     
     public void start() {		
         try {
                 connectionSocket = new DatagramSocket(); // port convenu avec les clients
                 
                 logger.info("server start on port " + String.valueOf(connectionSocket.getPort()));
-                
+                boolean connectionNotEstablished = true;
                 boolean run = true; 
                 byte[] buffer = new byte[1500];
                 DatagramPacket datagram = new DatagramPacket(buffer, buffer.length);
-                Timer timer = new Timer(); //Timer pour les timeouts
+                Timer handShakeTimer = new Timer(); //Timer pour les timeouts
+                Timer windowTimer = new Timer(); //Timer pour les timeouts
 
                 //Création du paquet pour la confirmation de connexion
                 this.setSeq(1);
+                this.setBase(1); //premier element de la fenêtre
                 UDPPacket confirmConnectionPacket = buildPacket(seq,ack,fin,new byte[1024]);
                 
                 //Envoi d'un paquet avec un seq 1. 
-                timer.scheduleAtFixedRate(new TimerTask() {
+                handShakeTimer.scheduleAtFixedRate(new TimerTask() {
                     @Override
                     public void run() {
                       sendPacket(confirmConnectionPacket);
                     }
-                  }, 0, 10000);
+                  }, 0, 1000);
+                              
                 
-                //En attente du paquet de notre client avec seq1, ack1. Pour terminé le handshake.
-                connectionSocket.receive(datagram); // reception bloquante
+                //Tant que la connexion n'est pas établi le timer ci-dessus va envoyé notre paquet de confirmation.
+                while(connectionNotEstablished){
+                    
+                    //En attente du paquet de notre client avec seq1, ack1. Pour terminé le handshake.
+                    connectionSocket.receive(datagram); // reception bloquante
+                   
+                    //extract data from packet		
+                    UDPPacket handShakePacket = (UDPPacket) Marshallizer.unmarshall(datagram);
+                    if(handShakePacket.getSeq() == 1 && handShakePacket.getAck() == 1){
+                        connectionNotEstablished = false;
+                        logger.info("Connection accepted by the client");
+
+                        //Arret du timer
+                        handShakeTimer.cancel();
+                    }
+                }
+                   
+               //Envoi d'un paquet avec un seq 1. 
+                windowTimer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        prepWindow();
+                        sendWindow();
+                    }
+                  }, 0, 500);
                 
-                logger.info("Connection accepted by the client");
-                
-                //Arret du timer
-                timer.cancel();
-               
                 //We can start to send data to the client
                 do  {                   
                     
-                    prepWindow();
-                    sendWindow();
+                    
                     connectionSocket.receive(datagram); // reception bloquante
+                    UDPPacket ackPacket = (UDPPacket) Marshallizer.unmarshall(datagram);
+                    gestionAck(ackPacket);
+                    
+                    //La packet recu signal la fin de la transmission.
+                    if(ackPacket.getFin() == 1){
+                        run = false;
+                        windowTimer.cancel();
+                    }
                     
                     logger.info("an ack was received");
                     
@@ -231,6 +300,7 @@ public class transmissionHandler implements Runnable{
         }
 	}
     public void stop(){
+        connectionSocket.close();
         Thread.currentThread().interrupt();
         return;
     }
