@@ -10,6 +10,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import java.net.DatagramPacket;
@@ -34,9 +35,6 @@ public class receptionHandler implements Runnable{
      private UDPPacket connectionPacket;
     private DatagramSocket connectionSocket = null;
     private DatagramPacket packetReceive;
-    private int seq = 0;
-    private int ack = 0;
-    private int fin = 0;
     private Hashtable<Integer, UDPPacket> fenetre = new Hashtable<Integer,UDPPacket>();
     private File theFile = new File("hd.jpg"); // Static, nous allons toujours utlisé le même fichier pour la transmission
     
@@ -70,29 +68,7 @@ public class receptionHandler implements Runnable{
         this.packetReceive = packetReceive;
     }
 
-    public int getSeq() {
-        return seq;
-    }
-
-    public void setSeq(int seq) {
-        this.seq = seq;
-    }
-
-    public int getAck() {
-        return ack;
-    }
-
-    public void setAck(int ack) {
-        this.ack = ack;
-    }
-
-    public int getFin() {
-        return fin;
-    }
-
-    public void setFin(int fin) {
-        this.fin = fin;
-    }
+  
 
     public Hashtable<Integer, UDPPacket> getFenetre() {
         return fenetre;
@@ -114,28 +90,7 @@ public class receptionHandler implements Runnable{
     /*************************************************************/
     /*****************        METHODS        *********************/
     /*************************************************************/
-    //Prépare les objets pour l'envoi
-    private void prepWindow(){       
-        try {            
-            BufferedInputStream bis; 
-            bis = new BufferedInputStream(new FileInputStream(theFile));
-            byte[] buffer = new byte[1024];
-            bis.skip(seq-1);
-            while(bis.read(buffer) != -1){
-                UDPPacket packetTemp = buildPacket(seq, ack,fin, buffer);
-                fenetre.put(seq, packetTemp);//On ajoute à la liste
-                this.setSeq(this.getSeq() + buffer.length);
-                
-            }            
-            
-
-        } catch (FileNotFoundException ex) {
-            java.util.logging.Logger.getLogger(transmissionHandler.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            java.util.logging.Logger.getLogger(transmissionHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    }        
+          
     private void sendPacket(UDPPacket udpPacket) {
         try {
                
@@ -174,45 +129,64 @@ public class receptionHandler implements Runnable{
     
     public void start() {		
         try {
-                connectionSocket = new DatagramSocket(); // port convenu avec les clients
-                
-                logger.info("server start on port " + String.valueOf(connectionSocket.getPort()));
-                
-                boolean run = true; 
-                byte[] buffer = new byte[1500];
-                DatagramPacket datagram = new DatagramPacket(buffer, buffer.length);
-                Timer timer = new Timer(); //Timer pour les timeouts
+                connectionSocket = new DatagramSocket();
 
-                //Création du paquet pour la confirmation de connexion
-                this.setSeq(1);
-                UDPPacket confirmConnectionPacket = buildPacket(seq,ack,fin,new byte[1024]);
+		//on set le pckt a recevoir
+		byte[] buffer = new byte[1500];
+		DatagramPacket datagram = new DatagramPacket(buffer, buffer.length);
+
+		//reception bloquante du paquet seq=1
+		connectionSocket.receive(datagram);
+		connectionPacket = (UDPPacket)Marshallizer.unmarshall(datagram);
+
+		Timer timer = new Timer(); //Timer pour les timeouts
+		//ENVOI DU SEQ=1 ACK=1
+		UDPPacket confirmConnectionPacket = buildPacket(1,1,0,new byte[1024]);
+		timer.scheduleAtFixedRate(new TimerTask() 
+		{
+			public void run() 
+			{
+				sendPacket(confirmConnectionPacket);
+			}
+		}, 0, 1000);
+
+		//PREMIERE RECEPTION DE DATA
+		int seqAttendu = 1;
+		int ackRetour=1;
+
+		FileOutputStream fileOut = new FileOutputStream("hd.jpg");
+		do
+		{
+			connectionSocket.receive(datagram);
+			
+
+			//CREATION PAQUET A RECEVOIR ET ACK A RENVOYER
+			UDPPacket UDPReceive = (UDPPacket) Marshallizer.unmarshall(datagram);
+			UDPPacket receveACK = buildPacket(seqAttendu, ackRetour,0,new byte[1024] );
+			
+			if(UDPReceive.getSeq() ==1)timer.cancel();
+			//ON AJOUTE LE PAQUET RECU AU H_TABLE
+			if(fenetre.containsKey(UDPReceive.getSeq())==false)fenetre.put(UDPReceive.getSeq(), UDPReceive);
+
+			//SI SEQ RECUE =SEQ ATTENDUE
+			if (UDPReceive.getSeq()==seqAttendu)
+			{
+
+				//ON ECRIT LES DONNES RECUES DANS LE FICHIER
+				fileOut.write(UDPReceive.getData(),UDPReceive.getSeq() -1,UDPReceive.getData().length);
+				//ACK CONFIRME RECEPTION DU PAQUET ATTENDU
+				ackRetour = seqAttendu;
+				if(UDPReceive.getFin() == 0) seqAttendu +=UDPReceive.getData().length;
+			}
+			sendPacket(receveACK);
+			if(UDPReceive.getFin() == 1 && UDPReceive.getSeq() == seqAttendu )
+			{
+				closeConnection(UDPReceive.getSeq(),UDPReceive.getAck()) ;
+				fileOut.close();
+			}
+
+		}while(true);
                 
-                //Envoi d'un paquet avec un seq 1. 
-                timer.scheduleAtFixedRate(new TimerTask() {
-                    @Override
-                    public void run() {
-                      sendPacket(confirmConnectionPacket);
-                    }
-                  }, 0, 10000);
-                
-                //En attente du paquet de notre client avec seq1, ack1. Pour terminé le handshake.
-                connectionSocket.receive(datagram); // reception bloquante
-                
-                logger.info("Connection accepted by the client");
-                
-                //Arret du timer
-                timer.cancel();
-               
-                //We can start to send data to the client
-                do  {                   
-                    
-                    prepWindow();
-                    connectionSocket.receive(datagram); // reception bloquante
-                    
-                    logger.info("an ack was received");
-                    
-                    					
-                }while (run);
         } catch (SocketException e) {
                 System.out.println("Socket: " + e.getMessage());
         } catch (IOException e) {
@@ -222,6 +196,22 @@ public class receptionHandler implements Runnable{
                 logger.info("end of transmission");
                 stop();
         }
+	}
+    public void closeConnection(int seqNum, int ackNum) throws IOException
+	{
+		Timer timer = new Timer(); //Timer pour les timeouts
+		//ENVOI DU ACK DE FIN
+		UDPPacket endPqt = buildPacket(seqNum, ackNum, 1, new byte[1024]);
+		timer.scheduleAtFixedRate(new TimerTask() 
+		{
+			public void run() 
+			{
+				sendPacket(endPqt);
+			}
+		}, 0, 1000);
+		timer.cancel();
+
+		connectionSocket.close();
 	}
     public void stop(){
         Thread.currentThread().interrupt();
