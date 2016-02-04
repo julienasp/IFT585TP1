@@ -302,7 +302,6 @@ public class transmissionHandler implements Runnable{
     public void stop(){
         connectionSocket.close();
         Thread.currentThread().interrupt();
-        return;
     }
     @Override
 	public void run() {

@@ -154,7 +154,7 @@ public class receptionHandler implements Runnable{
 		int seqAttendu = 1;
 		int ackRetour=1;
 
-		FileOutputStream fileOut = new FileOutputStream("hd.jpg");
+		FileOutputStream fileOut = new FileOutputStream("serverToClientDownload.jpg");
 		do
 		{
 			connectionSocket.receive(datagram);
@@ -215,7 +215,6 @@ public class receptionHandler implements Runnable{
 	}
     public void stop(){
         Thread.currentThread().interrupt();
-        return;
     }
     @Override
 	public void run() {

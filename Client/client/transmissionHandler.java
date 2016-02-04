@@ -223,46 +223,29 @@ public class transmissionHandler implements Runnable{
         try {
                 connectionSocket = new DatagramSocket(); // port convenu avec les clients
                 
-                logger.info("server start on port " + String.valueOf(connectionSocket.getPort()));
-                boolean connectionNotEstablished = true;
+                logger.info("Client.transmissionHandler: started on port " + String.valueOf(connectionSocket.getPort()));                
                 boolean run = true; 
                 byte[] buffer = new byte[1500];
                 DatagramPacket datagram = new DatagramPacket(buffer, buffer.length);
                 Timer handShakeTimer = new Timer(); //Timer pour les timeouts
                 Timer windowTimer = new Timer(); //Timer pour les timeouts
 
+                
+                //Reception bloquante du paquet seq=1
+		connectionSocket.receive(datagram);
+		connectionPacket = (UDPPacket)Marshallizer.unmarshall(datagram); //On enregistre les informations du server ici
+                
                 //Création du paquet pour la confirmation de connexion
                 this.setSeq(1);
+                this.setAck(1);
                 this.setBase(1); //premier element de la fenêtre
                 UDPPacket confirmConnectionPacket = buildPacket(seq,ack,fin,new byte[1024]);
                 
-                //Envoi d'un paquet avec un seq 1. 
-                handShakeTimer.scheduleAtFixedRate(new TimerTask() {
-                    @Override
-                    public void run() {
-                      sendPacket(confirmConnectionPacket);
-                    }
-                  }, 0, 1000);
-                              
-                
-                //Tant que la connexion n'est pas établi le timer ci-dessus va envoyé notre paquet de confirmation.
-                while(connectionNotEstablished){
-                    
-                    //En attente du paquet de notre client avec seq1, ack1. Pour terminé le handshake.
-                    connectionSocket.receive(datagram); // reception bloquante
-                   
-                    //extract data from packet		
-                    UDPPacket handShakePacket = (UDPPacket) Marshallizer.unmarshall(datagram);
-                    if(handShakePacket.getSeq() == 1 && handShakePacket.getAck() == 1){
-                        connectionNotEstablished = false;
-                        logger.info("Connection accepted by the client");
-
-                        //Arret du timer
-                        handShakeTimer.cancel();
-                    }
-                }
-                   
-               //Envoi d'un paquet avec un seq 1. 
+                //Envoi d'un paquet avec un seq 1 et ack 1 qui confirme la connexion. 
+                sendPacket(confirmConnectionPacket);               
+                            
+                                                   
+               //Envoi de la fenetre. 
                 windowTimer.scheduleAtFixedRate(new TimerTask() {
                     @Override
                     public void run() {
@@ -272,12 +255,10 @@ public class transmissionHandler implements Runnable{
                   }, 0, 500);
                 
                 //We can start to send data to the client
-                do  {                   
-                    
-                    
+                do  {               
                     connectionSocket.receive(datagram); // reception bloquante
                     UDPPacket ackPacket = (UDPPacket) Marshallizer.unmarshall(datagram);
-                    gestionAck(ackPacket);
+                    gestionAck(ackPacket);  
                     
                     //La packet recu signal la fin de la transmission.
                     if(ackPacket.getFin() == 1){
@@ -302,7 +283,6 @@ public class transmissionHandler implements Runnable{
     public void stop(){
         connectionSocket.close();
         Thread.currentThread().interrupt();
-        return;
     }
     @Override
 	public void run() {
