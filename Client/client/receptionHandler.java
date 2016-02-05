@@ -113,7 +113,7 @@ public class receptionHandler implements Runnable{
                 UDPPacket packet = new UDPPacket(connectionPacket.getType(),connectionPacket.getDestination(),connectionPacket.getDestinationPort());
                 packet.setData(data);
                 packet.setSeq(seq);
-                packet.setSeq(ack);
+                packet.setAck(ack);
                 packet.setFin(fin);
                 logger.debug(packet.toString());
                 return packet;
