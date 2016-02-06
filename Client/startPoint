@@ -1,0 +1,12 @@
+import client.clientInterface;
+
+public class startPoint {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Thread InterfaceClient = new Thread( new  clientInterface());
+		InterfaceClient.start();	
+
+	}
+
+}
