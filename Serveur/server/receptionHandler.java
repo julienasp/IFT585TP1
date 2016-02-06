@@ -41,13 +41,14 @@ public class receptionHandler implements Runnable{
     private int fin = 0;
     private File theFile = new File("hd.jpg"); // Static, nous allons toujours utlisé le même fichier pour la transmission
     
-    private static final Logger logger = Logger.getLogger(transmissionHandler.class);
+    private static final Logger logger = Logger.getLogger(receptionHandler.class);
     
     /*************************************************************/
     /********************   CONSTRUCTOR   ************************/
     /*************************************************************/
     
     public receptionHandler(UDPPacket connectionPacket) {
+       logger.info("receptionHandler: (server) new runnable");
         this.connectionPacket = connectionPacket;
     }
 
@@ -120,7 +121,7 @@ public class receptionHandler implements Runnable{
           
     private void sendPacket(UDPPacket udpPacket) {
         try {
-               
+               logger.info("receptionHandler: (server) sendPacket");
                 logger.debug(udpPacket.toString());
                 byte[] packetData = Marshallizer.marshallize(udpPacket);
                 DatagramPacket datagram = new DatagramPacket(packetData,
@@ -136,7 +137,7 @@ public class receptionHandler implements Runnable{
     }
     
      private UDPPacket buildPacket(int seq, int ack, int fin, byte[] data) {
-        
+                logger.info("receptionHandler: (server) buildPacket executed");
                 UDPPacket packet = new UDPPacket(connectionPacket.getType(),connectionPacket.getDestination(),connectionPacket.getDestinationPort());
                 packet.setData(data);
                 packet.setSeq(seq);
@@ -168,11 +169,12 @@ public class receptionHandler implements Runnable{
             //Création du paquet pour la confirmation de connexion
             this.setSeq(1);            
             UDPPacket confirmConnectionPacket = buildPacket(seq,ack,fin,new byte[1024]);
-
+                
             //Envoi d'un paquet avec un seq 1. 
             handShakeTimer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
+                  logger.info("receptionHandler: (server) handShakeTimer, envoit d'un paquet pour confirmer la connexion.");
                   sendPacket(confirmConnectionPacket);
                 }
               }, 0, 1000);
@@ -180,15 +182,15 @@ public class receptionHandler implements Runnable{
 
             //Tant que la connexion n'est pas établi le timer ci-dessus va envoyé notre paquet de confirmation.
             while(connectionNotEstablished){
-
+                logger.info("receptionHandler: (server-connectionNotEstablished) en attente de connexion");
                 //En attente du paquet de notre client avec seq1, ack1. Pour terminé le handshake.
                 connectionSocket.receive(datagram); // reception bloquante
-
+                logger.info("receptionHandler: (server-connectionNotEstablished) reception d'un paquet");
                 //extract data from packet		
                 UDPPacket handShakePacket = (UDPPacket) Marshallizer.unmarshall(datagram);
                 if(handShakePacket.getSeq() >= 1 && handShakePacket.getAck() >= 1){ // Si on recoit un paquet de data ou bien la confirmation, alors on arret le timer
                     connectionNotEstablished = false;
-                    logger.info("Connection accepted by the client");
+                    logger.info("receptionHandler: (server) Connection accepted by the client");
 
                     //Arret du timer
                     handShakeTimer.cancel();
@@ -206,34 +208,42 @@ public class receptionHandler implements Runnable{
             FileOutputStream fileOut = new FileOutputStream("clientToServerUpload.jpg");
             do
             {
-                    connectionSocket.receive(datagram);
+                logger.info("receptionHandler: (server) en attente du premier datagram attendu");
+                connectionSocket.receive(datagram);
+                logger.info("receptionHandler: (server) reception d'un datagram");
 
+                //CREATION PAQUET A RECEVOIR ET ACK A RENVOYER
+                UDPPacket UDPReceive = (UDPPacket) Marshallizer.unmarshall(datagram);
+                UDPPacket receveACK = buildPacket(seqAttendu, ackRetour,0,new byte[1024] );
+                logger.info("receptionHandler: (server) création d'un paquet pour le ACK");
+                
+                //ON AJOUTE LE PAQUET RECU AU H_TABLE
+                if(fenetre.containsKey(UDPReceive.getSeq())==false)fenetre.put(UDPReceive.getSeq(), UDPReceive);
 
-                    //CREATION PAQUET A RECEVOIR ET ACK A RENVOYER
-                    UDPPacket UDPReceive = (UDPPacket) Marshallizer.unmarshall(datagram);
-                    UDPPacket receveACK = buildPacket(seqAttendu, ackRetour,0,new byte[1024] );
+                //SI SEQ RECUE =SEQ ATTENDUE
+                if (UDPReceive.getSeq()==seqAttendu)
+                {
+                        logger.info("receptionHandler: (server) le datagram reçu correspond à celui attendu");
+                        
+                        //ON ECRIT LES DONNES RECUES DANS LE FICHIER
+                        fileOut.write(UDPReceive.getData(),UDPReceive.getSeq() -1,UDPReceive.getData().length);
+                        
+                        //ACK CONFIRME RECEPTION DU PAQUET ATTENDU
+                        ackRetour = seqAttendu;
+                        
+                        if(UDPReceive.getFin() == 0) seqAttendu +=UDPReceive.getData().length;
+                }
+                sendPacket(receveACK);
+                logger.info("receptionHandler: (server) envoi du ack");
+                
+                if(UDPReceive.getFin() == 1 && UDPReceive.getSeq() == seqAttendu )
+                {
+                        logger.info("receptionHandler: (server) le datagram reçu souligne la fin de la connexion");
+                        closeConnection(UDPReceive.getSeq(),UDPReceive.getAck()) ;
+                        fileOut.close();
+                }
 
-                    //ON AJOUTE LE PAQUET RECU AU H_TABLE
-                    if(fenetre.containsKey(UDPReceive.getSeq())==false)fenetre.put(UDPReceive.getSeq(), UDPReceive);
-
-                    //SI SEQ RECUE =SEQ ATTENDUE
-                    if (UDPReceive.getSeq()==seqAttendu)
-                    {
-
-                            //ON ECRIT LES DONNES RECUES DANS LE FICHIER
-                            fileOut.write(UDPReceive.getData(),UDPReceive.getSeq() -1,UDPReceive.getData().length);
-                            //ACK CONFIRME RECEPTION DU PAQUET ATTENDU
-                            ackRetour = seqAttendu;
-                            if(UDPReceive.getFin() == 0) seqAttendu +=UDPReceive.getData().length;
-                    }
-                    sendPacket(receveACK);
-                    if(UDPReceive.getFin() == 1 && UDPReceive.getSeq() == seqAttendu )
-                    {
-                            closeConnection(UDPReceive.getSeq(),UDPReceive.getAck()) ;
-                            fileOut.close();
-                    }
-
-		}while(true);
+            }while(true);
                 
         } catch (SocketException e) {
                 System.out.println("Socket: " + e.getMessage());
@@ -247,7 +257,8 @@ public class receptionHandler implements Runnable{
 	}
     public void closeConnection(int seqNum, int ackNum) throws IOException
 	{
-		Timer timer = new Timer(); //Timer pour les timeouts
+		logger.info("receptionHandler: (server) closeConnection: fermeture de la connexion");
+                Timer timer = new Timer(); //Timer pour les timeouts
 		//ENVOI DU ACK DE FIN
 		UDPPacket endPqt = buildPacket(seqNum, ackNum, 1, new byte[1024]);
 		timer.scheduleAtFixedRate(new TimerTask() 
@@ -262,7 +273,8 @@ public class receptionHandler implements Runnable{
 		connectionSocket.close();
 	}
     public void stop(){
-        Thread.currentThread().interrupt();        
+        Thread.currentThread().interrupt();
+        logger.info("receptionHandler: (server) stop, fin du thread");
     }
     @Override
 	public void run() {

@@ -24,7 +24,7 @@ public class UDPServer implements Runnable{
 	
 	public void start() {
 		mySocket = null;
-		logger.info("server start on port " + String.valueOf(serverPort));
+		logger.info("UDPServer: server start on port " + String.valueOf(serverPort));
 		try {
 			mySocket = new DatagramSocket(serverPort); // port convenu avec les clients
 			byte[] buffer = new byte[1500];
@@ -32,7 +32,7 @@ public class UDPServer implements Runnable{
                             DatagramPacket datagram = new DatagramPacket(buffer, buffer.length);
                             mySocket.receive(datagram); // reception bloquante
                             
-                            logger.info("datafram receive");
+                            logger.info("UDPServer: datafram receive");
                             
                             //What append if pool full ?
                             pool.execute(new UDPPacketHandler(datagram,getMySocket()));					
@@ -57,7 +57,7 @@ public class UDPServer implements Runnable{
 				pool.shutdownNow(); // Cancel currently executing tasks
 				// Wait a while for tasks to respond to being cancelled
 				if (!pool.awaitTermination(60, TimeUnit.SECONDS))
-					logger.debug("Pool did not terminate");
+					logger.debug("UDPServer: Pool did not terminate");
 			}
 		} catch (InterruptedException ie) {
 			// (Re-)Cancel if current thread also interrupted

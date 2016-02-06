@@ -29,25 +29,25 @@ public class UDPPacketHandler implements Runnable {
 		super();
 		this.packetReceive = packetReceive;
 		this.serverSocket = serverSocket;
-		logger.info("new runnable");
+		logger.info("UDPPacketHandler:new runnable");
 	}
 	
 	@Override
 	public void run() {
 		//extract data from packet		
 		UDPPacket udpPacket = (UDPPacket) Marshallizer.unmarshall(packetReceive);
-		logger.info("udpPacket receive " + String.valueOf(udpPacket.getType()));	
+		logger.info("UDPPacketHandler: udpPacket analysed " + String.valueOf(udpPacket.getType()));	
 		if (udpPacket.isForDownload()) {
 			//Setup the transmissionThread
 			Thread transmissionThread = new Thread(new transmissionHandler(udpPacket));
                         transmissionThread.start();
-			logger.info("TransmissionHandler started");                        
+			logger.info("UDPPacketHandler: TransmissionHandler started");                        
 		}
                 else{
                     //Setup the receptionHandlerThread
 			Thread receptionHandlerThread = new Thread(new receptionHandler(udpPacket));
                         receptionHandlerThread.start();
-			logger.info("ReceptionHandler started");
+			logger.info("UDPPacketHandler: ReceptionHandler started");
                 }
 		
 	}
