@@ -10,17 +10,16 @@ import java.util.*;
 import org.apache.log4j.Logger;
 
 import protocole.UDPPacket;
-//import server.UDPServer;
 import utils.Marshallizer;
 
 public class clientInterface implements Runnable{
 
 	byte[] ipAddr = new byte[]{(byte) 192, (byte) 168, 100, 1};
 	private InetAddress ipDestination;
-	private int portDestination=6780;
+	private int portDestination=55557;
 	private DatagramSocket userRequest =null;
-	//private static final Logger logger = Logger.getLogger(UDPServer.class);
-
+	private static final Logger logger = Logger.getLogger(clientInterface.class);
+	
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
@@ -38,10 +37,9 @@ public class clientInterface implements Runnable{
 	public void start() throws SocketException, UnknownHostException {
 		// TODO Auto-generated method stub
 		ipDestination = InetAddress.getByAddress(ipAddr);
+		logger.info(ipDestination.toString());
 
-		while(true)
-		{
-			Scanner sc = new Scanner(System.in);
+		Scanner sc = new Scanner(System.in);
 			System.out.println("Quelle est l'action choisie ? ");
 			System.out.println("1 --- Upload --- ");
 			System.out.println("2 --- Download --- ");
@@ -59,25 +57,28 @@ public class clientInterface implements Runnable{
 			{
 			case 1:
 				UDPPacket uplPacket = new UDPPacket(0,ipDestination,portDestination);
-				sendPacket(uplPacket);
-				Thread uplThread = new Thread(new transmissionHandler(uplPacket));
+				
+				Thread uplThread = new Thread(new transmissionHandler(userRequest));
 				uplThread.start();
-				//logger.info("Uploading started");
-				userRequest.close();
+				sendPacket(uplPacket);
+				logger.info("Uploading started");
+				
 				break;
 
 			case 2: 
 				UDPPacket downPacket = new UDPPacket(1,ipDestination,portDestination);
-				sendPacket(downPacket);
-				Thread downThread = new Thread(new receptionHandler(downPacket));
+				
+				Thread downThread = new Thread(new receptionHandler(userRequest));
 				downThread.start();
-				//logger.info("Downloading started");
-				userRequest.close();
+				sendPacket(downPacket);
+				logger.info("Downloading started");
+				
 				break;
 			}
+			//sc.close();
 		}
-
-	}
+		
+	
 
 	private void sendPacket(UDPPacket udpPacket) {
 		try {
