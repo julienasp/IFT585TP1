@@ -91,7 +91,7 @@ public class clientInterface implements Runnable{
 
 			
                 //Ouverture Socket pour envoie packet (upl ou downl)
-                userRequest = new DatagramSocket(8456);                
+                userRequest = new DatagramSocket();                
                 logger.info("clientInterface: sourceAdr: " + userRequest.getInetAddress());
                 logger.info("clientInterface: sourcePort: " + userRequest.getPort());
                 switch (choixUser) 

@@ -41,7 +41,7 @@ public class transmissionHandler implements Runnable{
     private int ack = 0;
     private int fin = 0;
     private Hashtable<Integer, UDPPacket> fenetre = new Hashtable<Integer,UDPPacket>();
-    private File theFile = new File("hd.jpg"); // Static, nous allons toujours utlisé le même fichier pour la transmission
+    private File theFile = new File("md.jpg"); // Static, nous allons toujours utlisé le même fichier pour la transmission
     private Timer windowTimer = null;
     
     private static final Logger logger = Logger.getLogger(transmissionHandler.class);
@@ -170,7 +170,7 @@ public class transmissionHandler implements Runnable{
     }  
     
     //Envoi de la fenetre
-    private void sendWindow(){
+    private synchronized void sendWindow(){
         logger.info("transmissionHandler: (server) sendWindow executed");
         for (UDPPacket value : fenetre.values()) {
             sendPacket(value);
@@ -205,15 +205,15 @@ public class transmissionHandler implements Runnable{
                 return packet;
      }
      
-       private void gestionAck(UDPPacket udpPacket) {
+       private synchronized void gestionAck(UDPPacket udpPacket) {
         logger.info("gestionAck: (server) Vérification du ack reçu");
-        
+        logger.info("gestionAck: (server) ack reçu est:" + udpPacket.getAck());
         //Si le ack reçu correspond au premier paquet de la fenetre courante, alors on retire ce dernier de la table
         if(udpPacket.getAck() == this.getBase()){
             this.fenetre.remove(udpPacket.getAck());
             logger.info("gestionAck: (server) le paquet correspondant au ack reçu à été retirer de la fenêtre");
             this.setBase(this.getBase() + DATA_SIZE); 
-            logger.info("gestionAck: (server) base est incrémenté");
+            logger.info("gestionAck: (server) base est incrémenté à :" + this.getBase());
         }
         else{
             logger.info("gestionAck: (server) le ack recu ne correspond pas à notre premier paquet, alors la fenêtre reste inchangé");
@@ -282,8 +282,9 @@ public class transmissionHandler implements Runnable{
                 //We can start to send data to the client
                 do  {                   
                     
-                    
+                    logger.info("transmissionHandler: (server) waiting for an ack");
                     connectionSocket.receive(datagram); // reception bloquante
+                    logger.info("transmissionHandler: (server) an ack was received");
                     UDPPacket ackPacket = (UDPPacket) Marshallizer.unmarshall(datagram);
                     gestionAck(ackPacket);
                     
@@ -294,7 +295,7 @@ public class transmissionHandler implements Runnable{
                         windowTimer.cancel();
                     }
                     
-                    logger.info("transmissionHandler: (server) an ack was received");
+                    
                     
                     					
                 }while (run);

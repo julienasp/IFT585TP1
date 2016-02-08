@@ -191,13 +191,14 @@ public class receptionHandler implements Runnable{
 				ackRetour = seqAttendu;
 				if(UDPReceive.getFin() == 0) seqAttendu +=UDPReceive.getData().length;
 			}
-			sendPacket(receveACK);
+                        sendPacket(receveACK);
 			if(UDPReceive.getFin() == 1 && UDPReceive.getSeq() == seqAttendu )
 			{
 				logger.info("receptionHandler: (client) fermeture de la connexion");
-                                closeConnection(UDPReceive.getSeq(),UDPReceive.getAck()) ;
+                                closeConnection(seqAttendu,ackRetour) ;
 				bos.close();
 			}
+                        
 
 		}while(true);
                 
@@ -223,9 +224,16 @@ public class receptionHandler implements Runnable{
 				sendPacket(endPqt);
 			}
 		}, 0, 1000);
-		timer.cancel();
-
-		connectionSocket.close();
+                Timer fermerTimer = new Timer();
+                fermerTimer.schedule(new TimerTask() 
+		{
+			public void run() 
+			{
+				timer.cancel();
+                                connectionSocket.close();
+                                stop();
+			}
+		}, 10000);		
 	}
     public void stop(){
         Thread.currentThread().interrupt();
