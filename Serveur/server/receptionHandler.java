@@ -6,25 +6,20 @@
 package server;
 
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.SocketException;
 import org.apache.log4j.Logger;
 
 
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
 import protocole.UDPPacket;
 import utils.Marshallizer;
 /**
@@ -35,8 +30,11 @@ public class receptionHandler implements Runnable{
      private UDPPacket connectionPacket;
     private DatagramSocket connectionSocket = null;
     private DatagramPacket packetReceive;
+    private DatagramPacket packetSource;
+    private InetAddress destination; 		// destinataire du message
+    private int destinationPort;
     private Hashtable<Integer, UDPPacket> fenetre = new Hashtable<Integer,UDPPacket>();
-    private File theFile = new File("hd.jpg"); // Static, nous allons toujours utlisé le même fichier pour la transmission
+    private File theFile = new File("image.jpg"); // Static, nous allons toujours utlisÃ© le mÃªme fichier pour la transmission
     
     private static final Logger logger = Logger.getLogger(transmissionHandler.class);
     
@@ -44,8 +42,10 @@ public class receptionHandler implements Runnable{
     /********************   CONSTRUCTOR   ************************/
     /*************************************************************/
     
-    public receptionHandler(UDPPacket connectionPacket) {
-        this.connectionPacket = connectionPacket;
+    public receptionHandler(DatagramPacket packetSource) {
+    	this.packetSource = packetSource;
+    	this.destination = packetSource.getAddress();
+    	this.destinationPort = packetSource.getPort();
     }
 
     /*************************************************************/
@@ -56,7 +56,31 @@ public class receptionHandler implements Runnable{
         return connectionSocket;
     }
 
-    public void setConnectionSocket(DatagramSocket connectionSocket) {
+    public DatagramPacket getPacketSource() {
+		return packetSource;
+	}
+
+	public void setPacketSource(DatagramPacket packetSource) {
+		this.packetSource = packetSource;
+	}
+
+	public InetAddress getDestination() {
+		return destination;
+	}
+
+	public void setDestination(InetAddress destination) {
+		this.destination = destination;
+	}
+
+	public int getDestinationPort() {
+		return destinationPort;
+	}
+
+	public void setDestinationPort(int destinationPort) {
+		this.destinationPort = destinationPort;
+	}
+
+	public void setConnectionSocket(DatagramSocket connectionSocket) {
         this.connectionSocket = connectionSocket;
     }
 
@@ -67,8 +91,6 @@ public class receptionHandler implements Runnable{
     public void setPacketReceive(DatagramPacket packetReceive) {
         this.packetReceive = packetReceive;
     }
-
-  
 
     public Hashtable<Integer, UDPPacket> getFenetre() {
         return fenetre;
@@ -100,7 +122,7 @@ public class receptionHandler implements Runnable{
                                 packetData.length, 
                                 udpPacket.getDestination(),
                                 udpPacket.getDestinationPort());
-                connectionSocket.send(datagram); // émission non-bloquante
+                connectionSocket.send(datagram); // Ã©mission non-bloquante
         } catch (SocketException e) {
                 System.out.println("Socket: " + e.getMessage());
         } catch (IOException e) {
@@ -110,10 +132,10 @@ public class receptionHandler implements Runnable{
     
      private UDPPacket buildPacket(int seq, int ack, int fin, byte[] data) {
         
-                UDPPacket packet = new UDPPacket(connectionPacket.getType(),connectionPacket.getDestination(),connectionPacket.getDestinationPort());
+                UDPPacket packet = new UDPPacket(connectionPacket.getType(),getDestination(),getDestinationPort());
                 packet.setData(data);
                 packet.setSeq(seq);
-                packet.setSeq(ack);
+                packet.setAck(ack);
                 packet.setFin(fin);
                 logger.debug(packet.toString());
                 return packet;
