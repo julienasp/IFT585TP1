@@ -1,0 +1,97 @@
+package client;
+
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.*;
+import org.apache.log4j.Logger;
+
+import protocole.UDPPacket;
+//import server.UDPServer;
+import utils.Marshallizer;
+
+public class clientInterface implements Runnable{
+
+	byte[] ipAddr = new byte[]{(byte) 192, (byte) 168, 100, 1};
+	private InetAddress ipDestination;
+	private int portDestination=6780;
+	private DatagramSocket userRequest =null;
+	//private static final Logger logger = Logger.getLogger(UDPServer.class);
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		try {
+			start();
+		} catch (SocketException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void start() throws SocketException, UnknownHostException {
+		// TODO Auto-generated method stub
+		ipDestination = InetAddress.getByAddress(ipAddr);
+
+		while(true)
+		{
+			Scanner sc = new Scanner(System.in);
+			System.out.println("Quelle est l'action choisie ? ");
+			System.out.println("1 --- Upload --- ");
+			System.out.println("2 --- Download --- ");
+			System.out.println("0 --- Exit --- ");
+			int choixUser = sc.nextInt();
+
+			if(choixUser ==0)
+			{
+				sc.close();
+				return;
+			}
+			//Ouverture Socket pour envoie packet (upl ou downl)
+			userRequest = new DatagramSocket();
+			switch (choixUser) 
+			{
+			case 1:
+				UDPPacket uplPacket = new UDPPacket(0,ipDestination,portDestination);
+				sendPacket(uplPacket);
+				Thread uplThread = new Thread(new transmissionHandler(uplPacket));
+				uplThread.start();
+				//logger.info("Uploading started");
+				userRequest.close();
+				break;
+
+			case 2: 
+				UDPPacket downPacket = new UDPPacket(1,ipDestination,portDestination);
+				sendPacket(downPacket);
+				Thread downThread = new Thread(new receptionHandler(downPacket));
+				downThread.start();
+				//logger.info("Downloading started");
+				userRequest.close();
+				break;
+			}
+		}
+
+	}
+
+	private void sendPacket(UDPPacket udpPacket) {
+		try {
+			byte[] packetData = Marshallizer.marshallize(udpPacket);
+			DatagramPacket datagram = new DatagramPacket(packetData,
+					packetData.length, 
+					udpPacket.getDestination(),
+					udpPacket.getDestinationPort());
+			userRequest.send(datagram); // Ã©mission non-bloquante
+		} catch (SocketException e) {
+			System.out.println("Socket: " + e.getMessage());
+		} catch (IOException e) {
+			System.out.println("IO: " + e.getMessage());
+		}
+	}
+
+}
