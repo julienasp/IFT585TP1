@@ -237,6 +237,10 @@ public class transmissionHandler implements Runnable{
 		connectionSocket.receive(datagram);
 		connectionPacket = (UDPPacket)Marshallizer.unmarshall(datagram); //On enregistre les informations du server ici
                 
+                //insersion des informations sources du datagram
+                connectionPacket.setSourceAdr(datagram.getAddress());
+                connectionPacket.setSourcePort(datagram.getPort());
+                
                 //Création du paquet pour la confirmation de connexion
                 this.setSeq(1);
                 this.setAck(1);

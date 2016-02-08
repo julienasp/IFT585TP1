@@ -36,7 +36,12 @@ public class UDPPacketHandler implements Runnable {
 	public void run() {
 		//extract data from packet		
 		UDPPacket udpPacket = (UDPPacket) Marshallizer.unmarshall(packetReceive);
-		logger.info("UDPPacketHandler: udpPacket analysed " + String.valueOf(udpPacket.getType()));	
+		logger.info("UDPPacketHandler: udpPacket analysed " + String.valueOf(udpPacket.getType()));
+                
+                //insert the source data into the packet
+                udpPacket.setSourceAdr(packetReceive.getAddress());
+                udpPacket.setSourcePort(packetReceive.getPort());
+                
 		if (udpPacket.isForDownload()) {
 			//Setup the transmissionThread
 			Thread transmissionThread = new Thread(new transmissionHandler(udpPacket));

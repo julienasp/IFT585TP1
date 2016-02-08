@@ -11,9 +11,10 @@ public class StartClient {
             try {
                 // TODO Auto-generated method stub
                 //Create match service
-                //byte[] ipAddr = new byte[]{(byte) 127, (byte) 168, 100, 1};                
+                //byte[] ipAddr = new byte[]{(byte) 192, (byte) 168, 100, 1};                
                 InetAddress ipDestination;                
                 //ipDestination = InetAddress.getByAddress(ipAddr);
+               // byte[] ipAddr = new byte[]{(byte) 127, (byte) 0, 0, 1};
                 ipDestination = InetAddress.getLocalHost();
                 int port = 6780;
                 

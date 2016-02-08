@@ -39,7 +39,7 @@ public class receptionHandler implements Runnable{
     private Hashtable<Integer, UDPPacket> fenetre = new Hashtable<Integer,UDPPacket>();
     private File theFile = new File("hd.jpg"); // Static, nous allons toujours utlisé le même fichier pour la transmission
     
-    private static final Logger logger = Logger.getLogger(transmissionHandler.class);
+    private static final Logger logger = Logger.getLogger(receptionHandler.class);
     
     /*************************************************************/
     /********************   CONSTRUCTOR   ************************/
@@ -139,6 +139,11 @@ public class receptionHandler implements Runnable{
 		connectionSocket.receive(datagram);
                 logger.info("receptionHandler: (client) datagram reçu");
 		connectionPacket = (UDPPacket)Marshallizer.unmarshall(datagram);
+                
+                //insersion des informations sources du datagram
+                connectionPacket.setSourceAdr(datagram.getAddress());
+                connectionPacket.setSourcePort(datagram.getPort());
+                
                 logger.info("receptionHandler: (client) datagram reçu:" + connectionPacket.toString());
 
 		Timer timer = new Timer(); //Timer pour les timeouts

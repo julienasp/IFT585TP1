@@ -228,7 +228,7 @@ public class transmissionHandler implements Runnable{
         try {
                 connectionSocket = new DatagramSocket(); // port convenu avec les clients
                 
-                logger.info("transmissionHandler: (server) new communcation port open on " + String.valueOf(connectionSocket.getPort()));
+                logger.info("transmissionHandler: (server) new communication port open on " + String.valueOf(connectionSocket.getPort()));
                 boolean connectionNotEstablished = true;
                 boolean run = true; 
                 byte[] buffer = new byte[1500];
@@ -240,7 +240,7 @@ public class transmissionHandler implements Runnable{
                 this.setSeq(1);
                 this.setBase(1); //premier element de la fenêtre
                 UDPPacket confirmConnectionPacket = buildPacket(seq,ack,fin,new byte[1024]);
-                
+                sendPacket(confirmConnectionPacket);
                 //Envoi d'un paquet avec un seq 1. 
                 handShakeTimer.scheduleAtFixedRate(new TimerTask() {
                     @Override
@@ -249,7 +249,7 @@ public class transmissionHandler implements Runnable{
                      sendPacket(confirmConnectionPacket);
                     }
                   }, 0, 1000);
-                logger.info("transmissionHandler: (server) connection started on port " + String.valueOf(connectionSocket.getPort()));            
+                      
                 
                 //Tant que la connexion n'est pas établi le timer ci-dessus va envoyé notre paquet de confirmation.
                 while(connectionNotEstablished){

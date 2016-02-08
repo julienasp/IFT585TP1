@@ -91,7 +91,9 @@ public class clientInterface implements Runnable{
 
 			
                 //Ouverture Socket pour envoie packet (upl ou downl)
-                userRequest = new DatagramSocket();
+                userRequest = new DatagramSocket(8456);                
+                logger.info("clientInterface: sourceAdr: " + userRequest.getInetAddress());
+                logger.info("clientInterface: sourcePort: " + userRequest.getPort());
                 switch (choixUser) 
                 {
                 case 0:
@@ -100,22 +102,26 @@ public class clientInterface implements Runnable{
                         break;
 
                 case 1:
-                        UDPPacket uplPacket = new UDPPacket(UDPPacket.FILEUPLOAD,userRequest.getInetAddress(),userRequest.getPort(),ipDestination,portDestination);
+                        UDPPacket uplPacket = new UDPPacket(UDPPacket.FILEUPLOAD,InetAddress.getLocalHost(),userRequest.getPort(),ipDestination,portDestination);
 
                         Thread uplThread = new Thread(new transmissionHandler(userRequest));
                         uplThread.start();
+                        logger.info("clientInterface:transmissionHandler started");
                         sendPacket(uplPacket);
-                        logger.info("Uploading started");
+                        logger.info("clientInterface: envoit du paquet pour signaler l'intention d'UPLOAD");
+                        logger.info("clientInterface: infos du paquet:" + uplPacket.toString());
                         sc.close();
                         break;
 
                 case 2: 
-                        UDPPacket downPacket = new UDPPacket(UDPPacket.FILEDOWNLOAD,userRequest.getInetAddress(),userRequest.getPort(),ipDestination,portDestination);
+                        UDPPacket downPacket = new UDPPacket(UDPPacket.FILEDOWNLOAD,InetAddress.getLocalHost(),userRequest.getPort(),ipDestination,portDestination);
 
                         Thread downThread = new Thread(new receptionHandler(userRequest));
                         downThread.start();
+                        logger.info("clientInterface:receptionHandler started");
                         sendPacket(downPacket);
-                        logger.info("Downloading started");
+                        logger.info("clientInterface: envoi du paquet pour signaler l'intention de DOWNLOAD");
+                        logger.info("clientInterface: infos du paquet:" + downPacket.toString());                        
                         sc.close();
                         break;
                 }

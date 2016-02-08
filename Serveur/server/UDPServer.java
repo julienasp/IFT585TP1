@@ -32,7 +32,7 @@ public class UDPServer implements Runnable{
                             DatagramPacket datagram = new DatagramPacket(buffer, buffer.length);
                             mySocket.receive(datagram); // reception bloquante
                             
-                            logger.info("UDPServer: datafram receive");
+                            logger.info("UDPServer: datagram received");
                             
                             //What append if pool full ?
                             pool.execute(new UDPPacketHandler(datagram,getMySocket()));					
