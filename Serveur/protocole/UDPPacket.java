@@ -11,9 +11,9 @@ public class UDPPacket implements Serializable {
     final static public int FILEDOWNLOAD = 1;
 		
     private int type;				// type de connexion upload ou download
-    private int seq = 0; 			// numéro de séquence 
-    private int ack = 0;                        // numéro d'acknowledgement
-    private int fin = 0;                        // attribut pour savoir si le paquet udp était le dernier
+    private int seq = 0; 			// numÃ©ro de sÃ©quence 
+    private int ack = 0;                        // numÃ©ro d'acknowledgement
+    private int fin = 0;                        // attribut pour savoir si le paquet udp Ã©tait le dernier
     private byte[] data = new byte[1024];       //Array avec les data de notre objets
     private InetAddress destination; 		// destinataire du message
     private int destinationPort;		// port du destinataire
