@@ -8,6 +8,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 
+import protocole.UDPPacket;
+import utils.Marshallizer;
+
 public class UDPServer implements Runnable{
 
 	private DatagramSocket mySocket = null;
@@ -25,14 +28,16 @@ public class UDPServer implements Runnable{
 	public void start() {
 		mySocket = null;
 		logger.info("server start on port " + String.valueOf(serverPort));
+		
 		try {
 			mySocket = new DatagramSocket(serverPort); // port convenu avec les clients
 			byte[] buffer = new byte[1500];
 			while (true) {
                             DatagramPacket datagram = new DatagramPacket(buffer, buffer.length);
                             mySocket.receive(datagram); // reception bloquante
-                            
+                            UDPPacket receivedTest = (UDPPacket) Marshallizer.unmarshall(datagram);
                             logger.info("datafram receive");
+                            logger.info(receivedTest.toString());
                             
                             //What append if pool full ?
                             pool.execute(new UDPPacketHandler(datagram,getMySocket()));					
