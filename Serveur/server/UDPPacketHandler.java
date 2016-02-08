@@ -4,15 +4,9 @@ import java.io.IOException;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.SocketException;
+//import java.net.SocketException;
 
 import org.apache.log4j.Logger;
-
-
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.logging.Level;
 import protocole.UDPPacket;
 import utils.Marshallizer;
 
@@ -21,7 +15,7 @@ import utils.Marshallizer;
 public class UDPPacketHandler implements Runnable {
 
 	private DatagramSocket serverSocket;
-        private DatagramPacket packetReceive;
+    private DatagramPacket packetReceive;
 	private static final Logger logger = Logger.getLogger(UDPPacketHandler.class);
 	
 
@@ -39,20 +33,16 @@ public class UDPPacketHandler implements Runnable {
 		logger.info("udpPacket receive " + String.valueOf(udpPacket.getType()));	
 		if (udpPacket.isForDownload()) {
 			//Setup the transmissionThread
-			Thread transmissionThread = new Thread(new transmissionHandler(udpPacket));
+			Thread transmissionThread = new Thread(new transmissionHandler(packetReceive));
                         transmissionThread.start();
 			logger.info("TransmissionHandler started");                        
 		}
                 else{
                     //Setup the receptionHandlerThread
-			Thread receptionHandlerThread = new Thread(new receptionHandler(udpPacket));
+			Thread receptionHandlerThread = new Thread(new receptionHandler(packetReceive));
                         receptionHandlerThread.start();
 			logger.info("ReceptionHandler started");
                 }
 		
 	}
-	
-		
-
-
 }
