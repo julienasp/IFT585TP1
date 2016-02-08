@@ -15,13 +15,10 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.util.Date;
 import org.apache.log4j.Logger;
 
 
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -36,12 +33,17 @@ public class transmissionHandler implements Runnable{
     private UDPPacket connectionPacket;
     private DatagramSocket connectionSocket = null;
     private DatagramPacket packetReceive;
-    private int base = 0; //Premier paquet de la fenêtre
+    private DatagramPacket packetSource;
+    private InetAddress destination; 		// destinataire du message
+    private int destinationPort;		// port du destinataire
+    private int base = 0; //Premier paquet de la fenÃªtre
     private int seq = 0;
     private int ack = 0;
     private int fin = 0;
     private Hashtable<Integer, UDPPacket> fenetre = new Hashtable<Integer,UDPPacket>();
-    private File theFile = new File("hd.jpg"); // Static, nous allons toujours utlisé le même fichier pour la transmission
+    private File theFile = new File("image.jpg"); // Static, nous allons toujours utlisÃ© le mÃªme fichier pour la transmission
+    private Timer finTimer=null;
+    private Timer windowTimer=null;
     
     private static final Logger logger = Logger.getLogger(transmissionHandler.class);
     
@@ -49,8 +51,11 @@ public class transmissionHandler implements Runnable{
     /********************   CONSTRUCTOR   ************************/
     /*************************************************************/
     
-    public transmissionHandler(UDPPacket connectionPacket) {
-        this.connectionPacket = connectionPacket;
+    public transmissionHandler(DatagramPacket packetSource) {
+    	this.packetSource = packetSource;
+    	this.destination = packetSource.getAddress();
+    	this.destinationPort = packetSource.getPort();
+    	this.connectionPacket=(UDPPacket) Marshallizer.unmarshall(packetSource);
     }
 
     /*************************************************************/
@@ -61,7 +66,31 @@ public class transmissionHandler implements Runnable{
         return connectionSocket;
     }
 
-    public void setConnectionSocket(DatagramSocket connectionSocket) {
+    public DatagramPacket getPacketSource() {
+		return packetSource;
+	}
+
+	public void setPacketSource(DatagramPacket packetSource) {
+		this.packetSource = packetSource;
+	}
+
+	public InetAddress getDestination() {
+		return destination;
+	}
+
+	public void setDestination(InetAddress destination) {
+		this.destination = destination;
+	}
+
+	public int getDestinationPort() {
+		return destinationPort;
+	}
+
+	public void setDestinationPort(int destinationPort) {
+		this.destinationPort = destinationPort;
+	}
+
+	public void setConnectionSocket(DatagramSocket connectionSocket) {
         this.connectionSocket = connectionSocket;
     }
 
@@ -133,7 +162,7 @@ public class transmissionHandler implements Runnable{
     /*************************************************************/
     /*****************        METHODS        *********************/
     /*************************************************************/
-    //Prépare les objets pour l'envoi
+    //PrÃ©pare les objets pour l'envoi
     private void prepWindow(){       
         try {            
             BufferedInputStream bis; 
@@ -142,19 +171,20 @@ public class transmissionHandler implements Runnable{
             bis.skip(seq-1);            
             while(bis.read(buffer) != -1 && fenetre.size() < 5){
                 
-                //Lorsqu'il ne reste plus aucun byte à lire par la suite, on signal la fin de la transmission                
+                //Lorsqu'il ne reste plus aucun byte Ã  lire par la suite, on signal la fin de la transmission                
                 if( bis.available() <= 0 ){
                     this.setFin(1);
-                    Timer finTimer = new Timer(); //Timer pour les timeouts
+                    finTimer = new Timer(); //Timer pour les timeouts
                     finTimer.schedule(new TimerTask() {
                     @Override
                     public void run() {
+                    	logger.info("fin Timer execute");
                       stop();
                     }
                   }, 35000); // 35 secondes avant la fermeture du thread de connection.
                 }
                 UDPPacket packetTemp = buildPacket(seq, ack,fin, buffer);
-                fenetre.put(seq, packetTemp);//On ajoute à la liste
+                fenetre.put(seq, packetTemp);//On ajoute Ã  la liste
                 this.setSeq(this.getSeq() + buffer.length);      
             }             
 
@@ -181,7 +211,7 @@ public class transmissionHandler implements Runnable{
                                 packetData.length, 
                                 udpPacket.getDestination(),
                                 udpPacket.getDestinationPort());
-                connectionSocket.send(datagram); // émission non-bloquante
+                connectionSocket.send(datagram); // Ã©mission non-bloquante
         } catch (SocketException e) {
                 System.out.println("Socket: " + e.getMessage());
         } catch (IOException e) {
@@ -191,27 +221,27 @@ public class transmissionHandler implements Runnable{
     
      private UDPPacket buildPacket(int seq, int ack, int fin, byte[] data) {
         
-                UDPPacket packet = new UDPPacket(connectionPacket.getType(),connectionPacket.getDestination(),connectionPacket.getDestinationPort());
+                UDPPacket packet = new UDPPacket(connectionPacket.getType(),getDestination(),getDestinationPort());
                 packet.setData(data);
                 packet.setSeq(seq);
-                packet.setSeq(ack);
+                packet.setAck(ack);
                 packet.setFin(fin);
                 logger.debug(packet.toString());
                 return packet;
      }
      
        private void gestionAck(UDPPacket udpPacket) {
-        logger.info("gestionAck: Vérification du ack reçu");
+        logger.info("gestionAck: VÃ©rification du ack reÃ§u");
         
-        //Si le ack reçu correspond au premier paquet de la fenetre courante, alors on retire ce dernier de la table
+        //Si le ack reÃ§u correspond au premier paquet de la fenetre courante, alors on retire ce dernier de la table
         if(udpPacket.getAck() == this.getBase()){
             this.fenetre.remove(udpPacket.getAck());
-            logger.info("gestionAck: le paquet correspondant au ack reçu à été retirer de la fenêtre");
+            logger.info("gestionAck: le paquet correspondant au ack reÃ§u Ã  Ã©tÃ© retirer de la fenÃªtre");
             this.setBase(this.getBase() + DATA_SIZE); 
-            logger.info("gestionAck: base est incrémenté");
+            logger.info("gestionAck: base est incrÃ©mentÃ©");
         }
         else{
-            logger.info("gestionAck: le ack recu ne correspond pas à notre premier paquet, alors la fenêtre reste inchangé");
+            logger.info("gestionAck: le ack recu ne correspond pas Ã  notre premier paquet, alors la fenÃªtre reste inchangÃ©");
         }
                 
         
@@ -229,11 +259,11 @@ public class transmissionHandler implements Runnable{
                 byte[] buffer = new byte[1500];
                 DatagramPacket datagram = new DatagramPacket(buffer, buffer.length);
                 Timer handShakeTimer = new Timer(); //Timer pour les timeouts
-                Timer windowTimer = new Timer(); //Timer pour les timeouts
+                windowTimer = new Timer(); //Timer pour les timeouts
 
-                //Création du paquet pour la confirmation de connexion
+                //CrÃ©ation du paquet pour la confirmation de connexion
                 this.setSeq(1);
-                this.setBase(1); //premier element de la fenêtre
+                this.setBase(1); //premier element de la fenÃªtre
                 UDPPacket confirmConnectionPacket = buildPacket(seq,ack,fin,new byte[1024]);
                 
                 //Envoi d'un paquet avec un seq 1. 
@@ -245,10 +275,10 @@ public class transmissionHandler implements Runnable{
                   }, 0, 1000);
                               
                 
-                //Tant que la connexion n'est pas établi le timer ci-dessus va envoyé notre paquet de confirmation.
+                //Tant que la connexion n'est pas Ã©tabli le timer ci-dessus va envoyÃ© notre paquet de confirmation.
                 while(connectionNotEstablished){
                     
-                    //En attente du paquet de notre client avec seq1, ack1. Pour terminé le handshake.
+                    //En attente du paquet de notre client avec seq1, ack1. Pour terminÃ© le handshake.
                     connectionSocket.receive(datagram); // reception bloquante
                    
                     //extract data from packet		
@@ -269,7 +299,7 @@ public class transmissionHandler implements Runnable{
                         prepWindow();
                         sendWindow();
                     }
-                  }, 0, 500);
+                  }, 0, 10000);
                 
                 //We can start to send data to the client
                 do  {                   
@@ -282,7 +312,7 @@ public class transmissionHandler implements Runnable{
                     //La packet recu signal la fin de la transmission.
                     if(ackPacket.getFin() == 1){
                         run = false;
-                        windowTimer.cancel();
+                        //windowTimer.cancel();
                     }
                     
                     logger.info("an ack was received");
@@ -301,6 +331,8 @@ public class transmissionHandler implements Runnable{
 	}
     public void stop(){
         connectionSocket.close();
+        windowTimer.cancel();
+        finTimer.cancel();
         Thread.currentThread().interrupt();
         return;
     }
