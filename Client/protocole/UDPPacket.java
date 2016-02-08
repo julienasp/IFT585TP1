@@ -17,13 +17,17 @@ public class UDPPacket implements Serializable {
     private byte[] data = new byte[1024];       //Array avec les data de notre objets
     private InetAddress destination; 		// destinataire du message
     private int destinationPort;		// port du destinataire
+    private InetAddress sourceAdr; 		// adresse de l'émetteur
+    private int sourcePort;                     // port source du paquet
 
     /*************************************************************/
     /***BELOW WE CAN FIND ALL CONSTRUCTORS FOR AN UDPPACKET*******/
     /*************************************************************/
     
-    public UDPPacket(int type, InetAddress destination, int destinationPort) {
+    public UDPPacket(int type, InetAddress sourceAdr, int sourcePort,InetAddress destination, int destinationPort) {
         this.type = type;
+        this.sourceAdr = sourceAdr;
+        this.sourcePort = sourcePort;
         this.destination = destination;
         this.destinationPort = destinationPort;
     }
@@ -45,11 +49,29 @@ public class UDPPacket implements Serializable {
         return (fin == 1);
     }
 
+    public InetAddress getSourceAdr() {
+        return sourceAdr;
+    }
+
+    public void setSourceAdr(InetAddress sourceAdr) {
+        this.sourceAdr = sourceAdr;
+    }
+
+    public int getSourcePort() {
+        return sourcePort;
+    }
+
+    public void setSourcePort(int sourcePort) {
+        this.sourcePort = sourcePort;
+    }
+
  
     /**************************************************/
     /**BELOW YOU WILL FIND EVERYONE SETTER AND GETTER**/
     /**************************************************/
-
+    
+    
+    
     public byte[] getData() {
         return data;
     }

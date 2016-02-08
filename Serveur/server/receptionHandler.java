@@ -7,6 +7,7 @@ package server;
 
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -138,7 +139,7 @@ public class receptionHandler implements Runnable{
     
      private UDPPacket buildPacket(int seq, int ack, int fin, byte[] data) {
                 logger.info("receptionHandler: (server) buildPacket executed");
-                UDPPacket packet = new UDPPacket(connectionPacket.getType(),connectionPacket.getDestination(),connectionPacket.getDestinationPort());
+                UDPPacket packet = new UDPPacket(connectionPacket.getType(),connectionSocket.getInetAddress(),connectionSocket.getPort(),connectionPacket.getSourceAdr(),connectionPacket.getSourcePort());
                 packet.setData(data);
                 packet.setSeq(seq);
                 packet.setAck(ack);
@@ -205,7 +206,8 @@ public class receptionHandler implements Runnable{
             int seqAttendu = 1;
             int ackRetour=1;
 
-            FileOutputStream fileOut = new FileOutputStream("clientToServerUpload.jpg");
+            BufferedOutputStream bos;             
+            bos = new BufferedOutputStream(new FileOutputStream("clientToServerUpload.jpg",true));            
             do
             {
                 logger.info("receptionHandler: (server) en attente du premier datagram attendu");
@@ -226,7 +228,7 @@ public class receptionHandler implements Runnable{
                         logger.info("receptionHandler: (server) le datagram reçu correspond à celui attendu");
                         
                         //ON ECRIT LES DONNES RECUES DANS LE FICHIER
-                        fileOut.write(UDPReceive.getData(),UDPReceive.getSeq() -1,UDPReceive.getData().length);
+                        bos.write(UDPReceive.getData());
                         
                         //ACK CONFIRME RECEPTION DU PAQUET ATTENDU
                         ackRetour = seqAttendu;
@@ -240,7 +242,7 @@ public class receptionHandler implements Runnable{
                 {
                         logger.info("receptionHandler: (server) le datagram reçu souligne la fin de la connexion");
                         closeConnection(UDPReceive.getSeq(),UDPReceive.getAck()) ;
-                        fileOut.close();
+                        bos.close();
                 }
 
             }while(true);

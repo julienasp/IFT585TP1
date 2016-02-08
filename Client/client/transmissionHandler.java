@@ -42,6 +42,7 @@ public class transmissionHandler implements Runnable{
     private int fin = 0;
     private Hashtable<Integer, UDPPacket> fenetre = new Hashtable<Integer,UDPPacket>();
     private File theFile = new File("hd.jpg"); // Static, nous allons toujours utlisé le même fichier pour la transmission
+    private Timer windowTimer = null;
     
     private static final Logger logger = Logger.getLogger(transmissionHandler.class);
     
@@ -49,8 +50,8 @@ public class transmissionHandler implements Runnable{
     /********************   CONSTRUCTOR   ************************/
     /*************************************************************/
     
-    public transmissionHandler(UDPPacket connectionPacket) {
-        this.connectionPacket = connectionPacket;
+    public transmissionHandler(DatagramSocket connectionSocket) {
+        this.connectionSocket = connectionSocket;
     }
 
     /*************************************************************/
@@ -191,7 +192,7 @@ public class transmissionHandler implements Runnable{
     
      private UDPPacket buildPacket(int seq, int ack, int fin, byte[] data) {
         
-                UDPPacket packet = new UDPPacket(connectionPacket.getType(),connectionPacket.getDestination(),connectionPacket.getDestinationPort());
+                UDPPacket packet = new UDPPacket(connectionPacket.getType(),connectionSocket.getInetAddress(),connectionSocket.getPort(),connectionPacket.getSourceAdr(),connectionPacket.getSourcePort());
                 packet.setData(data);
                 packet.setSeq(seq);
                 packet.setAck(ack);
@@ -283,6 +284,7 @@ public class transmissionHandler implements Runnable{
     public void stop(){
         connectionSocket.close();
         Thread.currentThread().interrupt();
+        windowTimer.cancel();
     }
     @Override
 	public void run() {

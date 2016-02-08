@@ -44,8 +44,8 @@ public class receptionHandler implements Runnable{
     /********************   CONSTRUCTOR   ************************/
     /*************************************************************/
     
-    public receptionHandler(UDPPacket connectionPacket) {
-        this.connectionPacket = connectionPacket;
+    public receptionHandler(DatagramSocket connectionSocket) {
+        this.connectionSocket = connectionSocket;
     }
 
     /*************************************************************/
@@ -110,7 +110,7 @@ public class receptionHandler implements Runnable{
     
      private UDPPacket buildPacket(int seq, int ack, int fin, byte[] data) {
         
-                UDPPacket packet = new UDPPacket(connectionPacket.getType(),connectionPacket.getDestination(),connectionPacket.getDestinationPort());
+                UDPPacket packet = new UDPPacket(connectionPacket.getType(),connectionSocket.getInetAddress(),connectionSocket.getPort(),connectionPacket.getSourceAdr(),connectionPacket.getSourcePort());
                 packet.setData(data);
                 packet.setSeq(seq);
                 packet.setAck(ack);
@@ -129,8 +129,6 @@ public class receptionHandler implements Runnable{
     
     public void start() {		
         try {
-                connectionSocket = new DatagramSocket();
-
 		//on set le pckt a recevoir
 		byte[] buffer = new byte[1500];
 		DatagramPacket datagram = new DatagramPacket(buffer, buffer.length);

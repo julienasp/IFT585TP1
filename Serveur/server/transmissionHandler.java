@@ -42,6 +42,7 @@ public class transmissionHandler implements Runnable{
     private int fin = 0;
     private Hashtable<Integer, UDPPacket> fenetre = new Hashtable<Integer,UDPPacket>();
     private File theFile = new File("hd.jpg"); // Static, nous allons toujours utlisé le même fichier pour la transmission
+    private Timer windowTimer = null;
     
     private static final Logger logger = Logger.getLogger(transmissionHandler.class);
     
@@ -51,7 +52,7 @@ public class transmissionHandler implements Runnable{
     
     public transmissionHandler(UDPPacket connectionPacket) {
         this.connectionPacket = connectionPacket;
-        logger.info("transmissionHandler: new runnable");
+        logger.info("transmissionHandler: (server) new runnable");
     }
 
     /*************************************************************/
@@ -137,7 +138,7 @@ public class transmissionHandler implements Runnable{
     //Prépare les objets pour l'envoi
     private void prepWindow(){       
         try {
-            logger.info("transmissionHandler: prepWindow executed");
+            logger.info("transmissionHandler: (server) prepWindow executed");
             BufferedInputStream bis; 
             bis = new BufferedInputStream(new FileInputStream(theFile));
             byte[] buffer = new byte[1024];
@@ -146,7 +147,7 @@ public class transmissionHandler implements Runnable{
                 
                 //Lorsqu'il ne reste plus aucun byte à lire par la suite, on signal la fin de la transmission                
                 if( bis.available() <= 0 ){
-                    logger.info("transmissionHandler: tous les bytes ont été lu. Début timer de fermeture");
+                    logger.info("transmissionHandler: (server) tous les bytes ont été lu. Début timer de fermeture");
                     this.setFin(1);
                     Timer finTimer = new Timer(); //Timer pour les timeouts
                     finTimer.schedule(new TimerTask() {
@@ -154,7 +155,7 @@ public class transmissionHandler implements Runnable{
                     public void run() {
                       stop();
                     }
-                  }, 35000); // 35 secondes avant la fermeture du thread de connection.
+                  }, 35000); // 35 secondes avant la fermeture du thread de connection.                  
                 }
                 UDPPacket packetTemp = buildPacket(seq, ack,fin, buffer);
                 fenetre.put(seq, packetTemp);//On ajoute à la liste
@@ -170,7 +171,7 @@ public class transmissionHandler implements Runnable{
     
     //Envoi de la fenetre
     private void sendWindow(){
-        logger.info("transmissionHandler: sendWindow executed");
+        logger.info("transmissionHandler: (server) sendWindow executed");
         for (UDPPacket value : fenetre.values()) {
             sendPacket(value);
         }        
@@ -178,8 +179,8 @@ public class transmissionHandler implements Runnable{
     
     private void sendPacket(UDPPacket udpPacket) {
         try {
-                logger.info("transmissionHandler: sendPacket executed");
-                logger.info("transmissionHandler: sendPacket : " + udpPacket.toString());
+                logger.info("transmissionHandler: (server) sendPacket executed");
+                logger.info("transmissionHandler: (server) sendPacket : " + udpPacket.toString());
                 byte[] packetData = Marshallizer.marshallize(udpPacket);
                 DatagramPacket datagram = new DatagramPacket(packetData,
                                 packetData.length, 
@@ -194,8 +195,8 @@ public class transmissionHandler implements Runnable{
     }
     
      private UDPPacket buildPacket(int seq, int ack, int fin, byte[] data) {
-                logger.info("transmissionHandler: buildPacket executed");
-                UDPPacket packet = new UDPPacket(connectionPacket.getType(),connectionPacket.getDestination(),connectionPacket.getDestinationPort());
+                logger.info("transmissionHandler: (server) buildPacket executed");
+                UDPPacket packet = new UDPPacket(connectionPacket.getType(),connectionSocket.getInetAddress(),connectionSocket.getPort(),connectionPacket.getSourceAdr(),connectionPacket.getSourcePort());
                 packet.setData(data);
                 packet.setSeq(seq);
                 packet.setAck(ack);
@@ -205,17 +206,17 @@ public class transmissionHandler implements Runnable{
      }
      
        private void gestionAck(UDPPacket udpPacket) {
-        logger.info("gestionAck: Vérification du ack reçu");
+        logger.info("gestionAck: (server) Vérification du ack reçu");
         
         //Si le ack reçu correspond au premier paquet de la fenetre courante, alors on retire ce dernier de la table
         if(udpPacket.getAck() == this.getBase()){
             this.fenetre.remove(udpPacket.getAck());
-            logger.info("gestionAck: le paquet correspondant au ack reçu à été retirer de la fenêtre");
+            logger.info("gestionAck: (server) le paquet correspondant au ack reçu à été retirer de la fenêtre");
             this.setBase(this.getBase() + DATA_SIZE); 
-            logger.info("gestionAck: base est incrémenté");
+            logger.info("gestionAck: (server) base est incrémenté");
         }
         else{
-            logger.info("gestionAck: le ack recu ne correspond pas à notre premier paquet, alors la fenêtre reste inchangé");
+            logger.info("gestionAck: (server) le ack recu ne correspond pas à notre premier paquet, alors la fenêtre reste inchangé");
         }
                 
         
@@ -227,13 +228,13 @@ public class transmissionHandler implements Runnable{
         try {
                 connectionSocket = new DatagramSocket(); // port convenu avec les clients
                 
-                logger.info("transmissionHandler: new communcation port open on " + String.valueOf(connectionSocket.getPort()));
+                logger.info("transmissionHandler: (server) new communcation port open on " + String.valueOf(connectionSocket.getPort()));
                 boolean connectionNotEstablished = true;
                 boolean run = true; 
                 byte[] buffer = new byte[1500];
                 DatagramPacket datagram = new DatagramPacket(buffer, buffer.length);
                 Timer handShakeTimer = new Timer(); //Timer pour les timeouts
-                Timer windowTimer = new Timer(); //Timer pour les timeouts
+                windowTimer = new Timer(); //Timer pour les timeouts
 
                 //Création du paquet pour la confirmation de connexion
                 this.setSeq(1);
@@ -244,11 +245,11 @@ public class transmissionHandler implements Runnable{
                 handShakeTimer.scheduleAtFixedRate(new TimerTask() {
                     @Override
                     public void run() {
-                     logger.info("transmissionHandler: Envoi du paquet pour le handShake"); 
+                     logger.info("transmissionHandler:(server) Envoi du paquet pour le handShake"); 
                      sendPacket(confirmConnectionPacket);
                     }
                   }, 0, 1000);
-                logger.info("transmissionHandler: connection started on port " + String.valueOf(connectionSocket.getPort()));            
+                logger.info("transmissionHandler: (server) connection started on port " + String.valueOf(connectionSocket.getPort()));            
                 
                 //Tant que la connexion n'est pas établi le timer ci-dessus va envoyé notre paquet de confirmation.
                 while(connectionNotEstablished){
@@ -260,7 +261,7 @@ public class transmissionHandler implements Runnable{
                     UDPPacket handShakePacket = (UDPPacket) Marshallizer.unmarshall(datagram);
                     if(handShakePacket.getSeq() == 1 && handShakePacket.getAck() == 1){
                         connectionNotEstablished = false;
-                        logger.info("Connection accepted by the client");
+                        logger.info("(server) Connection accepted by the client");
 
                         //Arret du timer
                         handShakeTimer.cancel();
@@ -271,9 +272,9 @@ public class transmissionHandler implements Runnable{
                 windowTimer.scheduleAtFixedRate(new TimerTask() {
                     @Override
                     public void run() {
-                        logger.info("transmissionHandler: windowTimer prepWindow.");
+                        logger.info("transmissionHandler:(server) windowTimer prepWindow.");
                         prepWindow();
-                        logger.info("transmissionHandler: windowTimer sendWindow.");
+                        logger.info("transmissionHandler: (server) windowTimer sendWindow.");
                         sendWindow();
                     }
                   }, 0, 500);
@@ -288,12 +289,12 @@ public class transmissionHandler implements Runnable{
                     
                     //La packet recu signal la fin de la transmission.
                     if(ackPacket.getFin() == 1){
-                        logger.info("transmissionHandler: confirmation de la fin de connexion");
+                        logger.info("transmissionHandler: (server) confirmation de la fin de connexion");
                         run = false;
                         windowTimer.cancel();
                     }
                     
-                    logger.info("transmissionHandler:an ack was received");
+                    logger.info("transmissionHandler: (server) an ack was received");
                     
                     					
                 }while (run);
@@ -303,14 +304,15 @@ public class transmissionHandler implements Runnable{
                 System.out.println("IO: " + e.getMessage());
         }
         finally {
-                logger.info("transmissionHandler: end of transmission");
+                logger.info("transmissionHandler: (server) end of transmission");
                 stop();
         }
 	}
     public void stop(){
         connectionSocket.close();
         Thread.currentThread().interrupt();
-        logger.info("transmissionHandler: stop() executed");
+        windowTimer.cancel();
+        logger.info("transmissionHandler: (server) stop() executed");
     }
     @Override
 	public void run() {
