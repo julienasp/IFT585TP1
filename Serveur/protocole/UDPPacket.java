@@ -126,7 +126,7 @@ public class UDPPacket implements Serializable {
     @Override
     public String toString() {
             String output = "UDPPacket [type=" + type + ", seq=" + this.getSeq() + ", ack=" + this.getAck() + ", fin=" + this.getFin()
-                            + ", destination=" + destination + ", destinationPort=" + destinationPort; 
+                            + ", source=" + sourceAdr + ", sourcePort=" + sourcePort+ ", destination=" + destination + ", destinationPort=" + destinationPort; 
             return output;	
     }
 }
