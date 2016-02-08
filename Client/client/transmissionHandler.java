@@ -51,6 +51,7 @@ public class transmissionHandler implements Runnable{
     /*************************************************************/
     
     public transmissionHandler(DatagramSocket connectionSocket) {
+        logger.info("transmissionHandler: (client) new runnable");
         this.connectionSocket = connectionSocket;
     }
 

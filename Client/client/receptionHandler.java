@@ -7,6 +7,7 @@ package client;
 
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -45,6 +46,7 @@ public class receptionHandler implements Runnable{
     /*************************************************************/
     
     public receptionHandler(DatagramSocket connectionSocket) {
+        logger.info("receptionHandler: (client) new runnable");
         this.connectionSocket = connectionSocket;
     }
 
@@ -93,8 +95,8 @@ public class receptionHandler implements Runnable{
           
     private void sendPacket(UDPPacket udpPacket) {
         try {
-               
-                logger.debug(udpPacket.toString());
+               logger.info("receptionHandler: (client) sendPacket");
+               logger.info("receptionHandler: (client) envoi du paquet suivant:" + udpPacket.toString());               
                 byte[] packetData = Marshallizer.marshallize(udpPacket);
                 DatagramPacket datagram = new DatagramPacket(packetData,
                                 packetData.length, 
@@ -109,7 +111,7 @@ public class receptionHandler implements Runnable{
     }
     
      private UDPPacket buildPacket(int seq, int ack, int fin, byte[] data) {
-        
+                logger.info("receptionHandler: (client) buildPacket");
                 UDPPacket packet = new UDPPacket(connectionPacket.getType(),connectionSocket.getInetAddress(),connectionSocket.getPort(),connectionPacket.getSourceAdr(),connectionPacket.getSourcePort());
                 packet.setData(data);
                 packet.setSeq(seq);
@@ -132,10 +134,12 @@ public class receptionHandler implements Runnable{
 		//on set le pckt a recevoir
 		byte[] buffer = new byte[1500];
 		DatagramPacket datagram = new DatagramPacket(buffer, buffer.length);
-
+                logger.info("receptionHandler: (client) en attente d'un datagram pour le hankshake");
 		//reception bloquante du paquet seq=1
 		connectionSocket.receive(datagram);
+                logger.info("receptionHandler: (client) datagram reçu");
 		connectionPacket = (UDPPacket)Marshallizer.unmarshall(datagram);
+                logger.info("receptionHandler: (client) datagram reçu:" + connectionPacket.toString());
 
 		Timer timer = new Timer(); //Timer pour les timeouts
 		//ENVOI DU SEQ=1 ACK=1
@@ -144,7 +148,8 @@ public class receptionHandler implements Runnable{
 		{
 			public void run() 
 			{
-				sendPacket(confirmConnectionPacket);
+                            logger.info("receptionHandler: (client) sending a handshake confirmation.");
+                            sendPacket(confirmConnectionPacket);
 			}
 		}, 0, 1000);
 
@@ -152,15 +157,19 @@ public class receptionHandler implements Runnable{
 		int seqAttendu = 1;
 		int ackRetour=1;
 
-		FileOutputStream fileOut = new FileOutputStream("serverToClientDownload.jpg");
+                BufferedOutputStream bos;             
+                bos = new BufferedOutputStream(new FileOutputStream("serverToClientDownload.jpg",true)); 		
 		do
 		{
+                        logger.info("receptionHandler: (client) en attente de datagram avec du data");
 			connectionSocket.receive(datagram);
-			
-
+			logger.info("receptionHandler: (client) datagram-data reçu");
+                        
 			//CREATION PAQUET A RECEVOIR ET ACK A RENVOYER
 			UDPPacket UDPReceive = (UDPPacket) Marshallizer.unmarshall(datagram);
+                        logger.info("receptionHandler: (client) datagram-data reçu:" + UDPReceive.toString());
 			UDPPacket receveACK = buildPacket(seqAttendu, ackRetour,0,new byte[1024] );
+                        logger.info("receptionHandler: (client) ack qu'on va envoyer:" + receveACK.toString());
 			
 			if(UDPReceive.getSeq() ==1)timer.cancel();
 			//ON AJOUTE LE PAQUET RECU AU H_TABLE
@@ -169,9 +178,10 @@ public class receptionHandler implements Runnable{
 			//SI SEQ RECUE =SEQ ATTENDUE
 			if (UDPReceive.getSeq()==seqAttendu)
 			{
-
+                                logger.info("receptionHandler: (client) datagram contient la séquence attendu");
 				//ON ECRIT LES DONNES RECUES DANS LE FICHIER
-				fileOut.write(UDPReceive.getData(),UDPReceive.getSeq() -1,UDPReceive.getData().length);
+				bos.write(UDPReceive.getData());
+                                logger.info("receptionHandler: (client) on write la séquence de byte pour seq=:" + UDPReceive.getSeq());
 				//ACK CONFIRME RECEPTION DU PAQUET ATTENDU
 				ackRetour = seqAttendu;
 				if(UDPReceive.getFin() == 0) seqAttendu +=UDPReceive.getData().length;
@@ -179,8 +189,9 @@ public class receptionHandler implements Runnable{
 			sendPacket(receveACK);
 			if(UDPReceive.getFin() == 1 && UDPReceive.getSeq() == seqAttendu )
 			{
-				closeConnection(UDPReceive.getSeq(),UDPReceive.getAck()) ;
-				fileOut.close();
+				logger.info("receptionHandler: (client) fermeture de la connexion");
+                                closeConnection(UDPReceive.getSeq(),UDPReceive.getAck()) ;
+				bos.close();
 			}
 
 		}while(true);
