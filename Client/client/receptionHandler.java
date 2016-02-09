@@ -36,7 +36,6 @@ public class receptionHandler implements Runnable{
      private UDPPacket connectionPacket;
     private DatagramSocket connectionSocket = null;
     private DatagramPacket packetReceive;
-    private Hashtable<Integer, UDPPacket> fenetre = new Hashtable<Integer,UDPPacket>();
     private File theFile = new File("hd.jpg"); // Static, nous allons toujours utlisé le même fichier pour la transmission
     
     private static final Logger logger = Logger.getLogger(receptionHandler.class);
@@ -70,15 +69,7 @@ public class receptionHandler implements Runnable{
         this.packetReceive = packetReceive;
     }
 
-  
 
-    public Hashtable<Integer, UDPPacket> getFenetre() {
-        return fenetre;
-    }
-
-    public void setFenetre(Hashtable<Integer, UDPPacket> fenetre) {
-        this.fenetre = fenetre;
-    }
 
     public File getTheFile() {
         return theFile;
@@ -177,9 +168,7 @@ public class receptionHandler implements Runnable{
 			UDPPacket receveACK = buildPacket(seqAttendu, ackRetour,0,new byte[1024] );
                         logger.info("receptionHandler: (client) ack qu'on va envoyer:" + receveACK.toString());
 			
-			if(UDPReceive.getSeq() ==1)timer.cancel();
-			//ON AJOUTE LE PAQUET RECU AU H_TABLE
-			if(fenetre.containsKey(UDPReceive.getSeq())==false)fenetre.put(UDPReceive.getSeq(), UDPReceive);
+			if(UDPReceive.getSeq() ==1)timer.cancel();			
 
 			//SI SEQ RECUE =SEQ ATTENDUE
 			if (UDPReceive.getSeq()==seqAttendu)

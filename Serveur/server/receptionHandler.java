@@ -36,7 +36,6 @@ public class receptionHandler implements Runnable{
     private UDPPacket connectionPacket;
     private DatagramSocket connectionSocket = null;
     private DatagramPacket packetReceive;
-    private Hashtable<Integer, UDPPacket> fenetre = new Hashtable<Integer,UDPPacket>();
     private int seq = 0;
     private int ack = 0;
     private int fin = 0;
@@ -99,13 +98,7 @@ public class receptionHandler implements Runnable{
 
     
 
-    public Hashtable<Integer, UDPPacket> getFenetre() {
-        return fenetre;
-    }
 
-    public void setFenetre(Hashtable<Integer, UDPPacket> fenetre) {
-        this.fenetre = fenetre;
-    }
 
     public File getTheFile() {
         return theFile;
@@ -207,8 +200,8 @@ public class receptionHandler implements Runnable{
             int ackRetour=1;
 
             BufferedOutputStream bos;             
-            //bos = new BufferedOutputStream(new FileOutputStream("clientToServerUpload.jpg",true));
-            bos = new BufferedOutputStream(new FileOutputStream("clientToServerUpload.txt",true)); 
+            bos = new BufferedOutputStream(new FileOutputStream("clientToServerUpload.jpg",true));
+            //bos = new BufferedOutputStream(new FileOutputStream("clientToServerUpload.txt",true)); 
             do
             {
                 logger.info("receptionHandler: (server) en attente de datagram");
@@ -218,10 +211,8 @@ public class receptionHandler implements Runnable{
                 //CREATION PAQUET A RECEVOIR ET ACK A RENVOYER
                 UDPPacket UDPReceive = (UDPPacket) Marshallizer.unmarshall(datagram);
                 UDPPacket receveACK = buildPacket(seqAttendu, ackRetour,0,new byte[1024] );
-                logger.info("receptionHandler: (server) création d'un paquet pour le ACK");
-                
-                //ON AJOUTE LE PAQUET RECU AU H_TABLE
-                if(fenetre.containsKey(UDPReceive.getSeq())==false)fenetre.put(UDPReceive.getSeq(), UDPReceive);
+                logger.info("receptionHandler: (server) création d'un paquet pour le ACK");  
+               
 
                 //SI SEQ RECUE =SEQ ATTENDUE
                 if (UDPReceive.getSeq()==seqAttendu)
