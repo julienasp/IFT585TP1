@@ -241,7 +241,7 @@ public class receptionHandler implements Runnable{
                 if(UDPReceive.getFin() == 1 && UDPReceive.getSeq() == seqAttendu )
                 {
                         logger.info("receptionHandler: (server) le datagram reçu souligne la fin de la connexion");
-                        closeConnection(UDPReceive.getSeq(),UDPReceive.getAck()) ;
+                        closeConnection(seqAttendu,ackRetour) ;
                         bos.close();
                 }
 
@@ -270,9 +270,16 @@ public class receptionHandler implements Runnable{
 				sendPacket(endPqt);
 			}
 		}, 0, 1000);
-		timer.cancel();
-
-		connectionSocket.close();
+                Timer fermerTimer = new Timer();
+                fermerTimer.schedule(new TimerTask() 
+		{
+			public void run() 
+			{
+				timer.cancel();
+                                connectionSocket.close();
+                                stop();
+			}
+		}, 10000);
 	}
     public void stop(){
         Thread.currentThread().interrupt();

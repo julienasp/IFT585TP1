@@ -41,7 +41,7 @@ public class transmissionHandler implements Runnable{
     private int ack = 0;
     private int fin = 0;
     private Hashtable<Integer, UDPPacket> fenetre = new Hashtable<Integer,UDPPacket>();
-    private File theFile = new File("hd.jpg"); // Static, nous allons toujours utlisé le même fichier pour la transmission
+    private File theFile = new File("md.jpg"); // Static, nous allons toujours utlisé le même fichier pour la transmission
     private Timer windowTimer = null;
     
     private static final Logger logger = Logger.getLogger(transmissionHandler.class);
@@ -168,7 +168,7 @@ public class transmissionHandler implements Runnable{
     }  
     
     //Envoi de la fenetre
-    private void sendWindow(){
+    private synchronized void sendWindow(){
         for (UDPPacket value : fenetre.values()) {
             sendPacket(value);
         }        
@@ -176,8 +176,7 @@ public class transmissionHandler implements Runnable{
     
     private void sendPacket(UDPPacket udpPacket) {
         try {
-               
-                logger.info(udpPacket.toString());
+                logger.info("transmissionHandler: (client) sendPacket " + udpPacket.toString());                
                 byte[] packetData = Marshallizer.marshallize(udpPacket);
                 DatagramPacket datagram = new DatagramPacket(packetData,
                                 packetData.length, 
@@ -192,7 +191,7 @@ public class transmissionHandler implements Runnable{
     }
     
      private UDPPacket buildPacket(int seq, int ack, int fin, byte[] data) {
-        
+                logger.info("transmissionHandler: (client) buildPacket "); 
                 UDPPacket packet = new UDPPacket(connectionPacket.getType(),connectionSocket.getInetAddress(),connectionSocket.getPort(),connectionPacket.getSourceAdr(),connectionPacket.getSourcePort());
                 packet.setData(data);
                 packet.setSeq(seq);
@@ -202,18 +201,18 @@ public class transmissionHandler implements Runnable{
                 return packet;
      }
      
-       private void gestionAck(UDPPacket udpPacket) {
-        logger.info("gestionAck: Vérification du ack reçu");
-        
+       private synchronized void gestionAck(UDPPacket udpPacket) {
+        logger.info("gestionAck: (client) Vérification du ack reçu");
+        logger.info("gestionAck: (client) ack reçu:" + udpPacket.getAck());
         //Si le ack reçu correspond au premier paquet de la fenetre courante, alors on retire ce dernier de la table
         if(udpPacket.getAck() == this.getBase()){
             this.fenetre.remove(udpPacket.getAck());
-            logger.info("gestionAck: le paquet correspondant au ack reçu à été retirer de la fenêtre");
+            logger.info("gestionAck: (client) le paquet correspondant au ack reçu à été retirer de la fenêtre");
             this.setBase(this.getBase() + DATA_SIZE); 
-            logger.info("gestionAck: base est incrémenté");
+            logger.info("gestionAck: (client) base est incrémenté à:" + this.getBase());
         }
         else{
-            logger.info("gestionAck: le ack recu ne correspond pas à notre premier paquet, alors la fenêtre reste inchangé");
+            logger.info("gestionAck: (client) le ack recu ne correspond pas à notre premier paquet, alors la fenêtre reste inchangé");
         }
                 
         
@@ -223,16 +222,16 @@ public class transmissionHandler implements Runnable{
     
     public void start() {		
         try {
-                connectionSocket = new DatagramSocket(); // port convenu avec les clients
                 
-                logger.info("Client.transmissionHandler: started on port " + String.valueOf(connectionSocket.getPort()));                
+                
+                logger.info("Client.transmissionHandler: (client) started on port " + String.valueOf(connectionSocket.getPort()));                
                 boolean run = true; 
                 byte[] buffer = new byte[1500];
                 DatagramPacket datagram = new DatagramPacket(buffer, buffer.length);
                 Timer handShakeTimer = new Timer(); //Timer pour les timeouts
                 Timer windowTimer = new Timer(); //Timer pour les timeouts
 
-                
+                logger.info("transmissionHandler: (client) en attente de la confirmation du serveur "); 
                 //Reception bloquante du paquet seq=1
 		connectionSocket.receive(datagram);
 		connectionPacket = (UDPPacket)Marshallizer.unmarshall(datagram); //On enregistre les informations du server ici
@@ -246,10 +245,10 @@ public class transmissionHandler implements Runnable{
                 this.setAck(1);
                 this.setBase(1); //premier element de la fenêtre
                 UDPPacket confirmConnectionPacket = buildPacket(seq,ack,fin,new byte[1024]);
-                
+                 
                 //Envoi d'un paquet avec un seq 1 et ack 1 qui confirme la connexion. 
                 sendPacket(confirmConnectionPacket);               
-                            
+                logger.info("transmissionHandler: (client) en attente de la confirmation envoi de la confirmation au serveur ");          
                                                    
                //Envoi de la fenetre. 
                 windowTimer.scheduleAtFixedRate(new TimerTask() {
@@ -261,18 +260,19 @@ public class transmissionHandler implements Runnable{
                   }, 0, 500);
                 
                 //We can start to send data to the client
-                do  {               
+                do  { 
+                     logger.info("transmissionHandler: (client) en attente d'un ack ");  
                     connectionSocket.receive(datagram); // reception bloquante
                     UDPPacket ackPacket = (UDPPacket) Marshallizer.unmarshall(datagram);
                     gestionAck(ackPacket);  
-                    
+                    logger.info("transmissionHandler: (client) ack reçu ");  
                     //La packet recu signal la fin de la transmission.
                     if(ackPacket.getFin() == 1){
                         run = false;
                         windowTimer.cancel();
                     }
                     
-                    logger.info("an ack was received");
+                   
                     
                     					
                 }while (run);

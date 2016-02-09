@@ -1,0 +1,56 @@
+2016-02-08 18:50:49.255 [Thread-1] INFO  server.UDPServer - UDPServer: server start on port 6780
+2016-02-08 18:50:56.095 [Thread-1] INFO  server.UDPServer - UDPServer: datagram received
+2016-02-08 18:50:56.096 [Thread-1] INFO  server.UDPPacketHandler - UDPPacketHandler:new runnable
+2016-02-08 18:50:56.103 [pool-2-thread-1] INFO  server.UDPPacketHandler - UDPPacketHandler: udpPacket analysed 0
+2016-02-08 18:50:56.105 [pool-2-thread-1] INFO  server.receptionHandler - receptionHandler: (server) new runnable
+2016-02-08 18:50:56.106 [pool-2-thread-1] INFO  server.UDPPacketHandler - UDPPacketHandler: ReceptionHandler started
+2016-02-08 18:50:56.107 [Thread-2] INFO  server.receptionHandler - receptionHandler: server start on port -1
+2016-02-08 18:50:56.107 [Thread-2] INFO  server.receptionHandler - receptionHandler: (server) buildPacket executed
+2016-02-08 18:50:56.108 [Thread-2] DEBUG server.receptionHandler - UDPPacket [type=0, seq=1, ack=0, fin=0, source=null, sourcePort=-1, destination=/192.168.111.132, destinationPort=54227
+2016-02-08 18:50:56.108 [Thread-2] INFO  server.receptionHandler - receptionHandler: (server-connectionNotEstablished) en attente de connexion
+2016-02-08 18:50:56.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) handShakeTimer, envoit d'un paquet pour confirmer la connexion.
+2016-02-08 18:50:56.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) sendPacket
+2016-02-08 18:50:56.108 [Timer-0] DEBUG server.receptionHandler - UDPPacket [type=0, seq=1, ack=0, fin=0, source=null, sourcePort=-1, destination=/192.168.111.132, destinationPort=54227
+2016-02-08 18:50:57.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) handShakeTimer, envoit d'un paquet pour confirmer la connexion.
+2016-02-08 18:50:57.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) sendPacket
+2016-02-08 18:50:57.108 [Timer-0] DEBUG server.receptionHandler - UDPPacket [type=0, seq=1, ack=0, fin=0, source=null, sourcePort=-1, destination=/192.168.111.132, destinationPort=54227
+2016-02-08 18:50:58.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) handShakeTimer, envoit d'un paquet pour confirmer la connexion.
+2016-02-08 18:50:58.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) sendPacket
+2016-02-08 18:50:58.108 [Timer-0] DEBUG server.receptionHandler - UDPPacket [type=0, seq=1, ack=0, fin=0, source=null, sourcePort=-1, destination=/192.168.111.132, destinationPort=54227
+2016-02-08 18:50:59.109 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) handShakeTimer, envoit d'un paquet pour confirmer la connexion.
+2016-02-08 18:50:59.109 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) sendPacket
+2016-02-08 18:50:59.109 [Timer-0] DEBUG server.receptionHandler - UDPPacket [type=0, seq=1, ack=0, fin=0, source=null, sourcePort=-1, destination=/192.168.111.132, destinationPort=54227
+2016-02-08 18:51:00.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) handShakeTimer, envoit d'un paquet pour confirmer la connexion.
+2016-02-08 18:51:00.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) sendPacket
+2016-02-08 18:51:00.108 [Timer-0] DEBUG server.receptionHandler - UDPPacket [type=0, seq=1, ack=0, fin=0, source=null, sourcePort=-1, destination=/192.168.111.132, destinationPort=54227
+2016-02-08 18:51:01.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) handShakeTimer, envoit d'un paquet pour confirmer la connexion.
+2016-02-08 18:51:01.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) sendPacket
+2016-02-08 18:51:01.108 [Timer-0] DEBUG server.receptionHandler - UDPPacket [type=0, seq=1, ack=0, fin=0, source=null, sourcePort=-1, destination=/192.168.111.132, destinationPort=54227
+2016-02-08 18:51:02.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) handShakeTimer, envoit d'un paquet pour confirmer la connexion.
+2016-02-08 18:51:02.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) sendPacket
+2016-02-08 18:51:02.108 [Timer-0] DEBUG server.receptionHandler - UDPPacket [type=0, seq=1, ack=0, fin=0, source=null, sourcePort=-1, destination=/192.168.111.132, destinationPort=54227
+2016-02-08 18:51:03.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) handShakeTimer, envoit d'un paquet pour confirmer la connexion.
+2016-02-08 18:51:03.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) sendPacket
+2016-02-08 18:51:03.108 [Timer-0] DEBUG server.receptionHandler - UDPPacket [type=0, seq=1, ack=0, fin=0, source=null, sourcePort=-1, destination=/192.168.111.132, destinationPort=54227
+2016-02-08 18:51:04.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) handShakeTimer, envoit d'un paquet pour confirmer la connexion.
+2016-02-08 18:51:04.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) sendPacket
+2016-02-08 18:51:04.108 [Timer-0] DEBUG server.receptionHandler - UDPPacket [type=0, seq=1, ack=0, fin=0, source=null, sourcePort=-1, destination=/192.168.111.132, destinationPort=54227
+2016-02-08 18:51:05.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) handShakeTimer, envoit d'un paquet pour confirmer la connexion.
+2016-02-08 18:51:05.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) sendPacket
+2016-02-08 18:51:05.108 [Timer-0] DEBUG server.receptionHandler - UDPPacket [type=0, seq=1, ack=0, fin=0, source=null, sourcePort=-1, destination=/192.168.111.132, destinationPort=54227
+2016-02-08 18:51:06.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) handShakeTimer, envoit d'un paquet pour confirmer la connexion.
+2016-02-08 18:51:06.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) sendPacket
+2016-02-08 18:51:06.108 [Timer-0] DEBUG server.receptionHandler - UDPPacket [type=0, seq=1, ack=0, fin=0, source=null, sourcePort=-1, destination=/192.168.111.132, destinationPort=54227
+2016-02-08 18:51:07.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) handShakeTimer, envoit d'un paquet pour confirmer la connexion.
+2016-02-08 18:51:07.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) sendPacket
+2016-02-08 18:51:07.108 [Timer-0] DEBUG server.receptionHandler - UDPPacket [type=0, seq=1, ack=0, fin=0, source=null, sourcePort=-1, destination=/192.168.111.132, destinationPort=54227
+2016-02-08 18:51:08.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) handShakeTimer, envoit d'un paquet pour confirmer la connexion.
+2016-02-08 18:51:08.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) sendPacket
+2016-02-08 18:51:08.108 [Timer-0] DEBUG server.receptionHandler - UDPPacket [type=0, seq=1, ack=0, fin=0, source=null, sourcePort=-1, destination=/192.168.111.132, destinationPort=54227
+2016-02-08 18:51:09.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) handShakeTimer, envoit d'un paquet pour confirmer la connexion.
+2016-02-08 18:51:09.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) sendPacket
+2016-02-08 18:51:09.108 [Timer-0] DEBUG server.receptionHandler - UDPPacket [type=0, seq=1, ack=0, fin=0, source=null, sourcePort=-1, destination=/192.168.111.132, destinationPort=54227
+2016-02-08 18:51:10.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) handShakeTimer, envoit d'un paquet pour confirmer la connexion.
+2016-02-08 18:51:10.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) sendPacket
+2016-02-08 18:51:10.108 [Timer-0] DEBUG server.receptionHandler - UDPPacket [type=0, seq=1, ack=0, fin=0, source=null, sourcePort=-1, destination=/192.168.111.132, destinationPort=54227
+2016-02-08 18:51:11.108 [Timer-0] INFO  server.receptionHandler - receptionHandler: (server) handShakeTimer, envoit d'un paquet pour confirmer la connexion.
