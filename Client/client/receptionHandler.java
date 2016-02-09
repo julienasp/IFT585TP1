@@ -147,17 +147,19 @@ public class receptionHandler implements Runnable{
                             logger.info("receptionHandler: (client) sending a handshake confirmation.");
                             sendPacket(confirmConnectionPacket);
 			}
-		}, 0, 1000);
+		}, 0, 10000);
 
 		//PREMIERE RECEPTION DE DATA
 		int seqAttendu = 1;
-		int ackRetour=1;
+		int ackRetour=0;
 
                 BufferedOutputStream bos;             
                 //bos = new BufferedOutputStream(new FileOutputStream("serverToClientDownload.jpg",true)); 
                 bos = new BufferedOutputStream(new FileOutputStream("serverToClientDownload.txt",true));               
 		do
 		{
+                        boolean nonVide = false;
+                        
                         logger.info("receptionHandler: (client) en attente de datagram avec du data");
 			connectionSocket.receive(datagram);
 			logger.info("receptionHandler: (client) datagram-data reçu");
@@ -170,8 +172,15 @@ public class receptionHandler implements Runnable{
 			
 			if(UDPReceive.getSeq() ==1)timer.cancel();			
 
-			//SI SEQ RECUE =SEQ ATTENDUE
-			if (UDPReceive.getSeq()==seqAttendu)
+			
+                        for (byte b : UDPReceive.getData()) {
+                            if (b != 0) {
+                                nonVide = true;
+                                break;
+                            }
+                        }
+                        //SI SEQ RECUE =SEQ ATTENDUE
+			if (UDPReceive.getSeq()==seqAttendu && nonVide)
 			{
                                 logger.info("receptionHandler: (client) datagram contient la séquence attendu");
 				//ON ECRIT LES DONNES RECUES DANS LE FICHIER

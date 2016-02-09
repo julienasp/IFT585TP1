@@ -163,7 +163,7 @@ public class transmissionHandler implements Runnable{
                 
                 //DEBUGING TOOL
                 //String doc=new String(packetTemp.getData(), "UTF-8");
-                //logger.info("recu et ecrit:" + doc.toString());
+                //logger.info("le packet seq:" + packetTemp.getSeq() + " contient: " + doc.toString());
                 
                 fenetre.put(seq, packetTemp);//On ajoute à la liste
                 this.setSeq(this.getSeq() + buffer.length);
@@ -220,7 +220,7 @@ public class transmissionHandler implements Runnable{
         logger.info("gestionAck: (server) Vérification du ack reçu");
         logger.info("gestionAck: (server) ack reçu est:" + udpPacket.getAck());
         //Si le ack reçu correspond au premier paquet de la fenetre courante, alors on retire ce dernier de la table
-        if(udpPacket.getAck() == this.getBase()){
+        if(udpPacket.getAck() == this.getBase() ){
             this.fenetre.remove(udpPacket.getAck());
             logger.info("gestionAck: (server) le paquet correspondant au ack reçu à été retirer de la fenêtre");
             this.setBase(this.getBase() + DATA_SIZE); 
@@ -250,6 +250,7 @@ public class transmissionHandler implements Runnable{
                 //Création du paquet pour la confirmation de connexion
                 this.setSeq(1);
                 this.setBase(1); //premier element de la fenêtre
+                
                 UDPPacket confirmConnectionPacket = buildPacket(seq,ack,fin,new byte[1024]);
                 sendPacket(confirmConnectionPacket);
                 //Envoi d'un paquet avec un seq 1. 
@@ -259,7 +260,7 @@ public class transmissionHandler implements Runnable{
                      logger.info("transmissionHandler:(server) Envoi du paquet pour le handShake"); 
                      sendPacket(confirmConnectionPacket);
                     }
-                  }, 0, 1000);
+                  }, 0, 15000);
                       
                 
                 //Tant que la connexion n'est pas établi le timer ci-dessus va envoyé notre paquet de confirmation.
@@ -275,9 +276,10 @@ public class transmissionHandler implements Runnable{
                         logger.info("(server) Connection accepted by the client");
 
                         //Arret du timer
-                        handShakeTimer.cancel();
+                        handShakeTimer.cancel();                        
+                        
                     }
-                }
+                }                
                    
                //Envoi d'un paquet avec un seq 1. 
                 windowTimer.scheduleAtFixedRate(new TimerTask() {
