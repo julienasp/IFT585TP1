@@ -297,7 +297,7 @@ public class transmissionHandler implements Runnable{
                     connectionSocket.receive(datagram); // reception bloquante
                     logger.info("transmissionHandler: (server) an ack was received");
                     UDPPacket ackPacket = (UDPPacket) Marshallizer.unmarshall(datagram);
-                    gestionAck(ackPacket);
+                    gestionAck(ackPacket);                    
                     
                     //La packet recu signal la fin de la transmission.
                     if(ackPacket.getFin() == 1){

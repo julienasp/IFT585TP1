@@ -44,6 +44,7 @@ public class transmissionHandler implements Runnable{
     private File theFile = new File("md.jpg"); // Static, nous allons toujours utlisé le même fichier pour la transmission
     //private File theFile = new File("textfile.txt"); // Static, nous allons toujours utlisé le même fichier pour la transmission
     private Timer windowTimer = null;
+    private boolean windowTimerRunning = true;
     
     private static final Logger logger = Logger.getLogger(transmissionHandler.class);
     
@@ -154,8 +155,9 @@ public class transmissionHandler implements Runnable{
                     public void run() {
                       stop();
                     }
-                  }, 35000); // 35 secondes avant la fermeture du thread de connection.
+                  }, 35000); // 35 secondes avant la fermeture du thread de connection.                
                 }
+                
                 UDPPacket packetTemp = buildPacket(seq, ack,fin, buffer);
                 fenetre.put(seq, packetTemp);//On ajoute à la liste
                 this.setSeq(this.getSeq() + buffer.length); 
@@ -274,12 +276,9 @@ public class transmissionHandler implements Runnable{
                     //La packet recu signal la fin de la transmission.
                     if(ackPacket.getFin() == 1){
                         run = false;
-                        windowTimer.cancel();
-                    }
-                    
-                   
-                    
-                    					
+                        windowTimer.cancel(); 
+                        windowTimerRunning = false;
+                    }                   					
                 }while (run);
         } catch (SocketException e) {
                 System.out.println("Socket: " + e.getMessage());
@@ -293,8 +292,8 @@ public class transmissionHandler implements Runnable{
 	}
     public void stop(){
         connectionSocket.close();
-        Thread.currentThread().interrupt();
-        windowTimer.cancel();
+        if(windowTimerRunning) windowTimer.cancel();        
+        Thread.currentThread().interrupt();        
     }
     @Override
 	public void run() {
