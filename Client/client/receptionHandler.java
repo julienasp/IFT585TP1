@@ -154,8 +154,8 @@ public class receptionHandler implements Runnable{
 		int ackRetour=0;
 
                 BufferedOutputStream bos;             
-                //bos = new BufferedOutputStream(new FileOutputStream("serverToClientDownload.jpg",true)); 
-                bos = new BufferedOutputStream(new FileOutputStream("serverToClientDownload.txt",true));               
+                bos = new BufferedOutputStream(new FileOutputStream("serverToClientDownload.jpg",true)); 
+                //bos = new BufferedOutputStream(new FileOutputStream("serverToClientDownload.txt",true));               
 		do
 		{
                         boolean nonVide = false;
@@ -170,22 +170,29 @@ public class receptionHandler implements Runnable{
 			UDPPacket receveACK = buildPacket(seqAttendu, ackRetour,0,new byte[1024] );
                         logger.info("receptionHandler: (client) ack qu'on va envoyer:" + receveACK.toString());
 			
-			if(UDPReceive.getSeq() ==1)timer.cancel();			
+			if(UDPReceive.getSeq()==1){
+                           for (byte b : UDPReceive.getData()) {
+                               if (b != 0) {
+                                   nonVide = true;
+                                   break;
+                               }
+                           }
+                           timer.cancel();
+                        }
+                        else nonVide = true;
 
 			
-                        for (byte b : UDPReceive.getData()) {
-                            if (b != 0) {
-                                nonVide = true;
-                                break;
-                            }
-                        }
+                       
                         //SI SEQ RECUE =SEQ ATTENDUE
 			if (UDPReceive.getSeq()==seqAttendu && nonVide)
 			{
                                 logger.info("receptionHandler: (client) datagram contient la séquence attendu");
 				//ON ECRIT LES DONNES RECUES DANS LE FICHIER
-                                String doc=new String(UDPReceive.getData(), "UTF-8");
-                                logger.info("recu et ecrit:" + doc.toString());
+                                
+                                //DEBUGGING TOOL
+                                //String doc=new String(UDPReceive.getData(), "UTF-8");
+                                //logger.info("recu et ecrit:" + doc.toString());
+                                
 				bos.write(UDPReceive.getData());                                
                                 bos.flush();
                                 logger.info("receptionHandler: (client) on write la séquence de byte pour seq=:" + UDPReceive.getSeq());
