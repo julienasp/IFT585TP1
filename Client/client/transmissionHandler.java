@@ -137,7 +137,7 @@ public class transmissionHandler implements Runnable{
     /*****************        METHODS        *********************/
     /*************************************************************/
     //Prépare les objets pour l'envoi
-    private void prepWindow(){       
+    private synchronized void prepWindow(){       
         try {            
             BufferedInputStream bis; 
             bis = new BufferedInputStream(new FileInputStream(theFile));
@@ -158,7 +158,11 @@ public class transmissionHandler implements Runnable{
                 }
                 UDPPacket packetTemp = buildPacket(seq, ack,fin, buffer);
                 fenetre.put(seq, packetTemp);//On ajoute à la liste
-                this.setSeq(this.getSeq() + buffer.length);      
+                this.setSeq(this.getSeq() + buffer.length); 
+                
+                //On vide le buffer
+                buffer = null;
+                buffer = new byte[1024];
             }             
 
         } catch (FileNotFoundException ex) {

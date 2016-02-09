@@ -137,15 +137,15 @@ public class transmissionHandler implements Runnable{
     /*****************        METHODS        *********************/
     /*************************************************************/
     //Prépare les objets pour l'envoi
-    private void prepWindow(){       
+    private synchronized void prepWindow(){       
         try {
             logger.info("transmissionHandler: (server) prepWindow executed");
             BufferedInputStream bis; 
-            bis = new BufferedInputStream(new FileInputStream(theFile));
+            bis = new BufferedInputStream(new FileInputStream(theFile));            
             byte[] buffer = new byte[1024];
+            logger.info("transmissionHandler: (server) skip le seq - 1 donc:" + (seq -1));
             bis.skip(seq-1);            
-            while(bis.read(buffer) != -1 && fenetre.size() < 5){
-                
+            while(bis.read(buffer,0,buffer.length) != -1 && fenetre.size() < 5  ){                
                 //Lorsqu'il ne reste plus aucun byte à lire par la suite, on signal la fin de la transmission                
                 if( bis.available() <= 0 ){
                     logger.info("transmissionHandler: (server) tous les bytes ont été lu. Début timer de fermeture");
@@ -159,9 +159,19 @@ public class transmissionHandler implements Runnable{
                   }, 35000); // 35 secondes avant la fermeture du thread de connection.                  
                 }
                 UDPPacket packetTemp = buildPacket(seq, ack,fin, buffer);
+                logger.info("transmissionHandler: (server) prepWindow() packetTemp:" + packetTemp.toString());
+                
+                //DEBUGING TOOL
+                //String doc=new String(packetTemp.getData(), "UTF-8");
+                //logger.info("recu et ecrit:" + doc.toString());
+                
                 fenetre.put(seq, packetTemp);//On ajoute à la liste
-                this.setSeq(this.getSeq() + buffer.length);      
-            }             
+                this.setSeq(this.getSeq() + buffer.length);
+                
+                //On vide le buffer
+                buffer = null;
+                buffer = new byte[1024];
+            }
 
         } catch (FileNotFoundException ex) {
             java.util.logging.Logger.getLogger(transmissionHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -181,7 +191,7 @@ public class transmissionHandler implements Runnable{
     private void sendPacket(UDPPacket udpPacket) {
         try {
                 logger.info("transmissionHandler: (server) sendPacket executed");
-                logger.info("transmissionHandler: (server) sendPacket : " + udpPacket.toString());
+                logger.info("transmissionHandler: (server) sendPacket : " + udpPacket.toString());                
                 byte[] packetData = Marshallizer.marshallize(udpPacket);
                 DatagramPacket datagram = new DatagramPacket(packetData,
                                 packetData.length, 

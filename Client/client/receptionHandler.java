@@ -164,7 +164,7 @@ public class receptionHandler implements Runnable{
 
                 BufferedOutputStream bos;             
                 //bos = new BufferedOutputStream(new FileOutputStream("serverToClientDownload.jpg",true)); 
-                 bos = new BufferedOutputStream(new FileOutputStream("serverToClientDownload.txt",true)); 
+                bos = new BufferedOutputStream(new FileOutputStream("serverToClientDownload.txt",true));               
 		do
 		{
                         logger.info("receptionHandler: (client) en attente de datagram avec du data");
@@ -186,7 +186,10 @@ public class receptionHandler implements Runnable{
 			{
                                 logger.info("receptionHandler: (client) datagram contient la séquence attendu");
 				//ON ECRIT LES DONNES RECUES DANS LE FICHIER
-				bos.write(UDPReceive.getData());
+                                String doc=new String(UDPReceive.getData(), "UTF-8");
+                                logger.info("recu et ecrit:" + doc.toString());
+				bos.write(UDPReceive.getData());                                
+                                bos.flush();
                                 logger.info("receptionHandler: (client) on write la séquence de byte pour seq=:" + UDPReceive.getSeq());
 				//ACK CONFIRME RECEPTION DU PAQUET ATTENDU
 				ackRetour = seqAttendu;
