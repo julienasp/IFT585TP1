@@ -41,7 +41,8 @@ public class transmissionHandler implements Runnable{
     private int ack = 0;
     private int fin = 0;
     private Hashtable<Integer, UDPPacket> fenetre = new Hashtable<Integer,UDPPacket>();
-    private File theFile = new File("md.jpg"); // Static, nous allons toujours utlisé le même fichier pour la transmission
+    //private File theFile = new File("md.jpg"); // Static, nous allons toujours utlisé le même fichier pour la transmission
+    private File theFile = new File("textfile.txt"); // Static, nous allons toujours utlisé le même fichier pour la transmission
     private Timer windowTimer = null;
     
     private static final Logger logger = Logger.getLogger(transmissionHandler.class);
@@ -228,7 +229,6 @@ public class transmissionHandler implements Runnable{
                 boolean run = true; 
                 byte[] buffer = new byte[1500];
                 DatagramPacket datagram = new DatagramPacket(buffer, buffer.length);
-                Timer handShakeTimer = new Timer(); //Timer pour les timeouts
                 Timer windowTimer = new Timer(); //Timer pour les timeouts
 
                 logger.info("transmissionHandler: (client) en attente de la confirmation du serveur "); 
@@ -263,9 +263,10 @@ public class transmissionHandler implements Runnable{
                 do  { 
                      logger.info("transmissionHandler: (client) en attente d'un ack ");  
                     connectionSocket.receive(datagram); // reception bloquante
+                    logger.info("transmissionHandler: (client) ack reçu ");
                     UDPPacket ackPacket = (UDPPacket) Marshallizer.unmarshall(datagram);
                     gestionAck(ackPacket);  
-                    logger.info("transmissionHandler: (client) ack reçu ");  
+                      
                     //La packet recu signal la fin de la transmission.
                     if(ackPacket.getFin() == 1){
                         run = false;

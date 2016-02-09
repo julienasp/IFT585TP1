@@ -163,7 +163,8 @@ public class receptionHandler implements Runnable{
 		int ackRetour=1;
 
                 BufferedOutputStream bos;             
-                bos = new BufferedOutputStream(new FileOutputStream("serverToClientDownload.jpg",true)); 		
+                //bos = new BufferedOutputStream(new FileOutputStream("serverToClientDownload.jpg",true)); 
+                 bos = new BufferedOutputStream(new FileOutputStream("serverToClientDownload.txt",true)); 
 		do
 		{
                         logger.info("receptionHandler: (client) en attente de datagram avec du data");

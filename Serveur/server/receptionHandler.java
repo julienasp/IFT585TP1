@@ -207,10 +207,11 @@ public class receptionHandler implements Runnable{
             int ackRetour=1;
 
             BufferedOutputStream bos;             
-            bos = new BufferedOutputStream(new FileOutputStream("clientToServerUpload.jpg",true));            
+            //bos = new BufferedOutputStream(new FileOutputStream("clientToServerUpload.jpg",true));
+            bos = new BufferedOutputStream(new FileOutputStream("clientToServerUpload.txt",true)); 
             do
             {
-                logger.info("receptionHandler: (server) en attente du premier datagram attendu");
+                logger.info("receptionHandler: (server) en attente de datagram");
                 connectionSocket.receive(datagram);
                 logger.info("receptionHandler: (server) reception d'un datagram");
 

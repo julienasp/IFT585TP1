@@ -1,0 +1,559 @@
+A-1- abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+A-2- 1 2 3 4 5 6 7 8 9 10
+
+A-3-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+A-4-1 2 3 4 5 6 7 8 9 10
+
+A-5-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+A-6-1 2 3 4 5 6 7 8 9 10
+
+A-7-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+A-8-1 2 3 4 5 6 7 8 9 10
+
+A-9-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+A-10-1 2 3 4 5 6 7 8 9 10
+
+A-11-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+A-12-1 2 3 4 5 6 7 8 9 10
+
+A-13-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+A-14-1 2 3 4 5 6 7 8 9 10
+
+A-15-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+A-16-1 2 3 4 5 6 7 8 9 10
+
+A-17-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+A-18-1 2 3 4 5 6 7 8 9 10
+
+A-19-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+A-20-1 2 3 4 5 6 7 8 9 10
+----------------------------------------------------------------------
+B-1- abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+B-2- 1 2 3 4 5 6 7 8 9 10
+
+B-3-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+B-4-1 2 3 4 5 6 7 8 9 10
+
+B-5-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+B-6-1 2 3 4 5 6 7 8 9 10
+
+B-7-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+B-8-1 2 3 4 5 6 7 8 9 10
+
+B-9-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+B-10-1 2 3 4 5 6 7 8 9 10
+
+B-11-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+B-12-1 2 3 4 5 6 7 8 9 10
+
+B-13-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+B-14-1 2 3 4 5 6 7 8 9 10
+
+B-15-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+B-16-1 2 3 4 5 6 7 8 9 10
+
+B-17-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+B-18-1 2 3 4 5 6 7 8 9 10
+
+B-19-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+B-20-1 2 3 4 5 6 7 8 9 10
+----------------------------------------------------------------------
+C-1- abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+C-2- 1 2 3 4 5 6 7 8 9 10
+
+C-3-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+C-4-1 2 3 4 5 6 7 8 9 10
+
+C-5-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+C-6-1 2 3 4 5 6 7 8 9 10
+
+C-7-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+C-8-1 2 3 4 5 6 7 8 9 10
+
+C-9-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+C-10-1 2 3 4 5 6 7 8 9 10
+
+C-11-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+C-12-1 2 3 4 5 6 7 8 9 10
+
+C-13-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+C-14-1 2 3 4 5 6 7 8 9 10
+
+C-15-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+C-16-1 2 3 4 5 6 7 8 9 10
+
+C-17-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+C-18-1 2 3 4 5 6 7 8 9 10
+
+C-19-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+C-20-1 2 3 4 5 6 7 8 9 10
+------------------------------------------------------------------------
+D-1- abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+D-2- 1 2 3 4 5 6 7 8 9 10
+
+D-3-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+D-4-1 2 3 4 5 6 7 8 9 10
+
+D-5-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+D-6-1 2 3 4 5 6 7 8 9 10
+
+D-7-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+D-8-1 2 3 4 5 6 7 8 9 10
+
+D-9-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+D-10-1 2 3 4 5 6 7 8 9 10
+
+D-11-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+D-12-1 2 3 4 5 6 7 8 9 10
+
+D-13-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+D-14-1 2 3 4 5 6 7 8 9 10
+
+D-15-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+D-16-1 2 3 4 5 6 7 8 9 10
+
+D-17-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+D-18-1 2 3 4 5 6 7 8 9 10
+
+D-19-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+D-20-1 2 3 4 5 6 7 8 9 10
+----------------------------------------------------------------------
+E-1- abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+E-2- 1 2 3 4 5 6 7 8 9 10
+
+E-3-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+E-4-1 2 3 4 5 6 7 8 9 10
+
+E-5-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+E-6-1 2 3 4 5 6 7 8 9 10
+
+E-7-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+E-8-1 2 3 4 5 6 7 8 9 10
+
+E-9-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+E-10-1 2 3 4 5 6 7 8 9 10
+
+E-11-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+E-12-1 2 3 4 5 6 7 8 9 10
+
+E-13-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+E-14-1 2 3 4 5 6 7 8 9 10
+
+E-15-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+E-16-1 2 3 4 5 6 7 8 9 10
+
+E-17-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+E-18-1 2 3 4 5 6 7 8 9 10
+
+E-19-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+E-20-1 2 3 4 5 6 7 8 9 10
+----------------------------------------------------------------------
+F-1- abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+F-2- 1 2 3 4 5 6 7 8 9 10
+
+F-3-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+F-4-1 2 3 4 5 6 7 8 9 10
+
+F-5-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+F-6-1 2 3 4 5 6 7 8 9 10
+
+F-7-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+F-8-1 2 3 4 5 6 7 8 9 10
+
+F-9-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+F-10-1 2 3 4 5 6 7 8 9 10
+
+F-11-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+F-12-1 2 3 4 5 6 7 8 9 10
+
+F-13-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+F-14-1 2 3 4 5 6 7 8 9 10
+
+F-15-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+F-16-1 2 3 4 5 6 7 8 9 10
+
+F-17-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+F-18-1 2 3 4 5 6 7 8 9 10
+
+F-19-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+F-20-1 2 3 4 5 6 7 8 9 10
+------------------------------------------------------------------------
+G-1- abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+G-2- 1 2 3 4 5 6 7 8 9 10
+
+G-3-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+G-4-1 2 3 4 5 6 7 8 9 10
+
+G-5-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+G-6-1 2 3 4 5 6 7 8 9 10
+
+G-7-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+G-8-1 2 3 4 5 6 7 8 9 10
+
+G-9-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+G-10-1 2 3 4 5 6 7 8 9 10
+
+G-11-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+G-12-1 2 3 4 5 6 7 8 9 10
+
+G-13-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+G-14-1 2 3 4 5 6 7 8 9 10
+
+G-15-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+G-16-1 2 3 4 5 6 7 8 9 10
+
+G-17-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+G-18-1 2 3 4 5 6 7 8 9 10
+
+G-19-abc def ghi jkl mno pqrs tuv wxyz ABC DEF GHI JKL MNO PQRS TUV WXYZ
+
+G-20-1 2 3 4 5 6 7 8 9 10
+----------------------------------------------------------------------
+01 9 8 7 6 5 4 3 2 1-02-G
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-91-G
+
+01 9 8 7 6 5 4 3 2 1-81-G
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-71-G
+
+01 9 8 7 6 5 4 3 2 1-61-G
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-51-G
+
+01 9 8 7 6 5 4 3 2 1-41-G
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-31-G
+
+01 9 8 7 6 5 4 3 2 1-21-G
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-11-G
+
+01 9 8 7 6 5 4 3 2 1-01-G
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-9-G
+
+01 9 8 7 6 5 4 3 2 1-8-G
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-7-G
+
+01 9 8 7 6 5 4 3 2 1-6-G
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-5-G
+
+01 9 8 7 6 5 4 3 2 1-4-G
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-3-G
+
+01 9 8 7 6 5 4 3 2 1 -2-G
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba -1-G
+------------------------------------------------------------------------
+01 9 8 7 6 5 4 3 2 1-02-F
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-91-F
+
+01 9 8 7 6 5 4 3 2 1-81-F
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-71-F
+
+01 9 8 7 6 5 4 3 2 1-61-F
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-51-F
+
+01 9 8 7 6 5 4 3 2 1-41-F
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-31-F
+
+01 9 8 7 6 5 4 3 2 1-21-F
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-11-F
+
+01 9 8 7 6 5 4 3 2 1-01-F
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-9-F
+
+01 9 8 7 6 5 4 3 2 1-8-F
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-7-F
+
+01 9 8 7 6 5 4 3 2 1-6-F
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-5-F
+
+01 9 8 7 6 5 4 3 2 1-4-F
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-3-F
+
+01 9 8 7 6 5 4 3 2 1 -2-F
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba -1-F
+----------------------------------------------------------------------
+01 9 8 7 6 5 4 3 2 1-02-E
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-91-E
+
+01 9 8 7 6 5 4 3 2 1-81-E
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-71-E
+
+01 9 8 7 6 5 4 3 2 1-61-E
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-51-E
+
+01 9 8 7 6 5 4 3 2 1-41-E
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-31-E
+
+01 9 8 7 6 5 4 3 2 1-21-E
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-11-E
+
+01 9 8 7 6 5 4 3 2 1-01-E
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-9-E
+
+01 9 8 7 6 5 4 3 2 1-8-E
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-7-E
+
+01 9 8 7 6 5 4 3 2 1-6-E
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-5-E
+
+01 9 8 7 6 5 4 3 2 1-4-E
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-3-E
+
+01 9 8 7 6 5 4 3 2 1 -2-E
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba -1-E
+----------------------------------------------------------------------
+01 9 8 7 6 5 4 3 2 1-02-D
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-91-D
+
+01 9 8 7 6 5 4 3 2 1-81-D
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-71-D
+
+01 9 8 7 6 5 4 3 2 1-61-D
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-51-D
+
+01 9 8 7 6 5 4 3 2 1-41-D
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-31-D
+
+01 9 8 7 6 5 4 3 2 1-21-D
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-11-D
+
+01 9 8 7 6 5 4 3 2 1-01-D
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-9-D
+
+01 9 8 7 6 5 4 3 2 1-8-D
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-7-D
+
+01 9 8 7 6 5 4 3 2 1-6-D
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-5-D
+
+01 9 8 7 6 5 4 3 2 1-4-D
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-3-D
+
+01 9 8 7 6 5 4 3 2 1 -2-D
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba -1-D
+------------------------------------------------------------------------
+01 9 8 7 6 5 4 3 2 1-02-C
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-91-C
+
+01 9 8 7 6 5 4 3 2 1-81-C
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-71-C
+
+01 9 8 7 6 5 4 3 2 1-61-C
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-51-C
+
+01 9 8 7 6 5 4 3 2 1-41-C
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-31-C
+
+01 9 8 7 6 5 4 3 2 1-21-C
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-11-C
+
+01 9 8 7 6 5 4 3 2 1-01-C
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-9-C
+
+01 9 8 7 6 5 4 3 2 1-8-C
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-7-C
+
+01 9 8 7 6 5 4 3 2 1-6-C
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-5-C
+
+01 9 8 7 6 5 4 3 2 1-4-C
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-3-C
+
+01 9 8 7 6 5 4 3 2 1 -2-C
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba -1-C
+----------------------------------------------------------------------
+01 9 8 7 6 5 4 3 2 1-02-B
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-91-B
+
+01 9 8 7 6 5 4 3 2 1-81-B
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-71-B
+
+01 9 8 7 6 5 4 3 2 1-61-B
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-51-B
+
+01 9 8 7 6 5 4 3 2 1-41-B
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-31-B
+
+01 9 8 7 6 5 4 3 2 1-21-B
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-11-B
+
+01 9 8 7 6 5 4 3 2 1-01-B
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-9-B
+
+01 9 8 7 6 5 4 3 2 1-8-B
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-7-B
+
+01 9 8 7 6 5 4 3 2 1-6-B
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-5-B
+
+01 9 8 7 6 5 4 3 2 1-4-B
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-3-B
+
+01 9 8 7 6 5 4 3 2 1 -2-B
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba -1-B
+----------------------------------------------------------------------
+01 9 8 7 6 5 4 3 2 1-02-A
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-91-A
+
+01 9 8 7 6 5 4 3 2 1-81-A
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-71-A
+
+01 9 8 7 6 5 4 3 2 1-61-A
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-51-A
+
+01 9 8 7 6 5 4 3 2 1-41-A
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-31-A
+
+01 9 8 7 6 5 4 3 2 1-21-A
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-11-A
+
+01 9 8 7 6 5 4 3 2 1-01-A
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-9-A
+
+01 9 8 7 6 5 4 3 2 1-8-A
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-7-A
+
+01 9 8 7 6 5 4 3 2 1-6-A
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-5-A
+
+01 9 8 7 6 5 4 3 2 1-4-A
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba-3-A
+
+01 9 8 7 6 5 4 3 2 1 -2-A
+
+ZYXW VUT SRQP ONM LKJ IHG FED CBA zyxw vut srqp onm lkj ihg fed cba -1-A

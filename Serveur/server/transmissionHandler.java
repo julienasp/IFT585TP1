@@ -41,7 +41,8 @@ public class transmissionHandler implements Runnable{
     private int ack = 0;
     private int fin = 0;
     private Hashtable<Integer, UDPPacket> fenetre = new Hashtable<Integer,UDPPacket>();
-    private File theFile = new File("md.jpg"); // Static, nous allons toujours utlisé le même fichier pour la transmission
+    //private File theFile = new File("md.jpg"); // Static, nous allons toujours utlisé le même fichier pour la transmission
+    private File theFile = new File("textfile.txt"); // Static, nous allons toujours utlisé le même fichier pour la transmission
     private Timer windowTimer = null;
     
     private static final Logger logger = Logger.getLogger(transmissionHandler.class);
